@@ -8,3 +8,12 @@
 
 3. Select Web API template
 ![aspnet-core-web-api](https://cloud.githubusercontent.com/assets/8171434/22863872/eff07d80-f147-11e6-9614-d853da97d1aa.png)
+
+4. Update all NuGet packages
+![update-all-nuget-packages](https://cloud.githubusercontent.com/assets/8171434/22864011/93533b2e-f149-11e6-883a-ead44bf1f403.png)
+
+5. Update project.json with correct runtime
+```json
+"runtimes": {
+   "win10-x64": { }
+}
