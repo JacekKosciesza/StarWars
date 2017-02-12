@@ -18,6 +18,19 @@
    "win10-x64": { }
 }
 ```
-
 6. Install GraphQL NuGet package
 ![install-graphql-nuget-package](https://cloud.githubusercontent.com/assets/8171434/22864254/50c06f70-f14e-11e6-80d2-6c94f3088c8a.png)
+
+7. Create 'StarWars.Core' project
+![starwars-core-project](https://cloud.githubusercontent.com/assets/8171434/22866500/e4313996-f177-11e6-90ce-44843e588dff.png)
+
+8. Create 'Droid' model
+```csharp
+namespace StarWars.Core.Models
+{
+    public class Droid
+    {
+        public string Id { get; set; }
+        public string Name { get; set; }
+    }
+}
