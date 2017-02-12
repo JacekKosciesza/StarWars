@@ -85,5 +85,43 @@ namespace StarWars.Api.Models
         public string Variables { get; set; }
     }
 }
-
 ```
+
+12. Create 'GraphQLController'
+```csharp
+using GraphQL;
+using GraphQL.Types;
+using Microsoft.AspNetCore.Mvc;
+using StarWars.Api.Models;
+using System.Threading.Tasks;
+
+namespace StarWars.Api.Controllers
+{
+    [Route("graphql")]
+    public class GraphQLController : Controller
+    {
+        [HttpPost]
+        public async Task<IActionResult> Post([FromBody] GraphQLQuery query)
+        {
+            var schema = new Schema { Query = new StarWarsQuery() };
+
+            var result = await new DocumentExecuter().ExecuteAsync(_ =>
+            {
+                _.Schema = schema;
+                _.Query = query.Query;
+
+            }).ConfigureAwait(false);
+
+            if (result.Errors?.Count > 0)
+            {
+                return BadRequest();
+            }
+
+            return Ok(result);
+        }
+    }
+}
+```
+
+13. Test using Postman
+![postman-test-query](https://cloud.githubusercontent.com/assets/8171434/22866705/17985b54-f17b-11e6-848c-6482b45e4934.png)
