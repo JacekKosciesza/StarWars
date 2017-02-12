@@ -1,5 +1,6 @@
 ﻿{
   "dependencies": {
+    "GraphQL": "0.14.6.657",
     "Microsoft.AspNetCore.Mvc": "1.1.1",
     "Microsoft.AspNetCore.Routing": "1.1.0",
     "Microsoft.AspNetCore.Server.IISIntegration": "1.1.0",

@@ -17,3 +17,7 @@
 "runtimes": {
    "win10-x64": { }
 }
+```
+
+6. Install GraphQL NuGet package
+![install-graphql-nuget-package](https://cloud.githubusercontent.com/assets/8171434/22864254/50c06f70-f14e-11e6-80d2-6c94f3088c8a.png)
