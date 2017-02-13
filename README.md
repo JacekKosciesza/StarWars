@@ -235,4 +235,64 @@ public class GraphQLController : Controller
 // ...
 ```
 
+* Add Microsoft.EntityFrameworkCore and Microsoft.EntityFrameworkCore.SqlServer Nuget packages to StarWars.Data project
+![entity-framework-core-nuget](https://cloud.githubusercontent.com/assets/8171434/22892209/0ff54e92-f212-11e6-9c95-e55f103b6c79.png)
+![entity-framework-sql-server-provider-nuget](https://cloud.githubusercontent.com/assets/8171434/22892268/39ac8b24-f212-11e6-805b-8462ce9a5c02.png)
 
+* Create StarWarsContext
+```csharp
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using StarWars.Core.Models;
+
+namespace StarWars.Data.EntityFramework
+{
+    public class StarWarsContext : DbContext
+    {
+        private readonly IConfigurationRoot _config;
+
+        public StarWarsContext() { }
+
+        public StarWarsContext(IConfigurationRoot config, DbContextOptions options)
+            : base(options)
+        {
+            _config = config;
+        }
+
+        public DbSet<Droid> Droids { get; set; }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            base.OnConfiguring(optionsBuilder);
+
+            optionsBuilder.UseSqlServer(_config["ConnectionStrings:StarWarsDatabaseConnection"]);
+        }
+    }
+}
+```
+
+* Create EF droid repository
+```csharp
+using StarWars.Core.Data;
+using System.Threading.Tasks;
+using StarWars.Core.Models;
+using Microsoft.EntityFrameworkCore;
+
+namespace StarWars.Data.EntityFramework.Repositories
+{
+    public class DroidRepository : IDroidRepository
+    {
+        private StarWarsContext _db { get; set; }
+
+        public DroidRepository(StarWarsContext db)
+        {
+            _db = db;
+        }
+
+        public Task<Droid> Get(int id)
+        {
+            return _db.Droids.FirstOrDefaultAsync(droid => droid.Id == id);
+        }
+    }
+}
+```

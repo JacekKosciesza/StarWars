@@ -2,6 +2,9 @@
   "version": "1.0.0-*",
 
   "dependencies": {
+    "Microsoft.EntityFrameworkCore": "1.1.0",
+    "Microsoft.EntityFrameworkCore.SqlServer": "1.1.0",
+    "Microsoft.Extensions.Configuration.Abstractions": "1.1.0",
     "NETStandard.Library": "1.6.0",
     "StarWars.Core": "1.0.0-*"
   },
