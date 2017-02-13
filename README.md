@@ -139,3 +139,5 @@ namespace StarWars.Core.Data
     }
 }
 ```
+15. Create 'StarWars.Data' project
+![starwars-data-project](https://cloud.githubusercontent.com/assets/8171434/22888090/dd357674-f204-11e6-8613-e2cac5087180.png)
