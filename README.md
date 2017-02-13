@@ -346,3 +346,29 @@ namespace StarWars.Data.EntityFramework.Seed
     }
 }
 ```
+
+* Configure dependency injection and run seeder in Startup.cs
+```csharp
+// ...
+public void ConfigureServices(IServiceCollection services)
+{
+    services.AddMvc();
+
+    services.AddTransient<StarWarsQuery>();
+    services.AddTransient<IDroidRepository, DroidRepository>();
+    services.AddDbContext<StarWarsContext>();
+    services.AddTransient<StarWarsSeedData>();
+}
+
+public void Configure(IApplicationBuilder app, IHostingEnvironment env,
+                    ILoggerFactory loggerFactory, StarWarsSeedData seeder)
+{
+    loggerFactory.AddConsole(Configuration.GetSection("Logging"));
+    loggerFactory.AddDebug();
+
+    app.UseMvc();
+
+    seeder.EnsureSeedData().Wait();
+}
+// ...
+```
