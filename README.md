@@ -271,6 +271,23 @@ namespace StarWars.Data.EntityFramework
 }
 ```
 
+* Update 'appsetting.json' with database connection
+```json
+{
+  "Logging": {
+    "IncludeScopes": false,
+    "LogLevel": {
+      "Default": "Debug",
+      "System": "Information",
+      "Microsoft": "Information"
+    }
+  },
+  "ConnectionStrings": {
+    "StarWarsDatabaseConnection": "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=StarWars;Integrated Security=SSPI;integrated security=true;MultipleActiveResultSets=True;"
+  }
+}
+```
+
 * Create EF droid repository
 ```csharp
 using StarWars.Core.Data;
@@ -292,6 +309,39 @@ namespace StarWars.Data.EntityFramework.Repositories
         public Task<Droid> Get(int id)
         {
             return _db.Droids.FirstOrDefaultAsync(droid => droid.Id == id);
+        }
+    }
+}
+```
+
+* Create seed data
+```csharp
+using StarWars.Core.Models;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace StarWars.Data.EntityFramework.Seed
+{
+    public class StarWarsSeedData
+    {
+        private readonly StarWarsContext _db;
+        public StarWarsSeedData(StarWarsContext db)
+        {
+            _db = db;
+        }
+
+        public async Task EnsureSeedData()
+        {
+            if (!_db.Droids.Any())
+            {
+                var droid = new Droid
+                {
+                    Id = 1,
+                    Name = "R2-D2"
+                };
+                _db.Droids.Add(droid);
+                await _db.SaveChangesAsync();
+            }
         }
     }
 }

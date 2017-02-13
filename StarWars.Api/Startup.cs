@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using StarWars.Core.Data;
 using StarWars.Data.InMemory;
 using StarWars.Api.Models;
+using StarWars.Data.EntityFramework;
 
 namespace StarWars.Api
 {
@@ -35,6 +36,7 @@ namespace StarWars.Api
 
             services.AddTransient<StarWarsQuery>();
             services.AddTransient<IDroidRepository, DroidRepository>();
+            services.AddDbContext<StarWarsContext>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
