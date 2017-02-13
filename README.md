@@ -125,3 +125,17 @@ namespace StarWars.Api.Controllers
 
 13. Test using Postman
 ![postman-test-query](https://cloud.githubusercontent.com/assets/8171434/22866705/17985b54-f17b-11e6-848c-6482b45e4934.png)
+
+14. Create 'IDroidRepository' interface
+```csharp
+using StarWars.Core.Models;
+using System.Threading.Tasks;
+
+namespace StarWars.Core.Data
+{
+    interface IDroidRepository
+    {
+        Task<Droid> Get(int id);
+    }
+}
+```
