@@ -30,7 +30,7 @@ namespace StarWars.Core.Models
 {
     public class Droid
     {
-        public string Id { get; set; }
+        public int Id { get; set; }
         public string Name { get; set; }
     }
 }
@@ -66,7 +66,7 @@ namespace StarWars.Api.Models
         {
             Field<DroidType>(
               "hero",
-              resolve: context => new Droid { Id = "1", Name = "R2-D2" }
+              resolve: context => new Droid { Id = 1, Name = "R2-D2" }
             );
         }
     }
@@ -133,7 +133,7 @@ using System.Threading.Tasks;
 
 namespace StarWars.Core.Data
 {
-    interface IDroidRepository
+    public interface IDroidRepository
     {
         Task<Droid> Get(int id);
     }
@@ -141,3 +141,27 @@ namespace StarWars.Core.Data
 ```
 15. Create 'StarWars.Data' project
 ![starwars-data-project](https://cloud.githubusercontent.com/assets/8171434/22888090/dd357674-f204-11e6-8613-e2cac5087180.png)
+
+16. Create in memory 'DroidRepository'
+```csharp
+using StarWars.Core.Data;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using StarWars.Core.Models;
+using System.Linq;
+
+namespace StarWars.Data.InMemory
+{
+    public class DroidRepository : IDroidRepository
+    {
+        private List<Droid> _droids = new List<Droid> {
+            new Droid { Id = 1, Name = "R2-D2" }
+        };
+
+        public Task<Droid> Get(int id)
+        {
+            return Task.FromResult(_droids.FirstOrDefault(droid => droid.Id == id));
+        }
+    }
+}
+```

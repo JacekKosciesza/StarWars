@@ -9,7 +9,7 @@ namespace StarWars.Api.Models
         {
             Field<DroidType>(
               "hero",
-              resolve: context => new Droid { Id = "1", Name = "R2-D2" }
+              resolve: context => new Droid { Id = 1, Name = "R2-D2" }
             );
         }
     }

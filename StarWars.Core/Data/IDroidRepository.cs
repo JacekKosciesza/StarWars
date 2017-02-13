@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace StarWars.Core.Data
 {
-    interface IDroidRepository
+    public interface IDroidRepository
     {
         Task<Droid> Get(int id);
     }
