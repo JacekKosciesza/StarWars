@@ -1,15 +1,17 @@
 ﻿using GraphQL.Types;
-using StarWars.Core.Models;
+using StarWars.Core.Data;
 
 namespace StarWars.Api.Models
 {
     public class StarWarsQuery : ObjectGraphType
     {
-        public StarWarsQuery()
+        private IDroidRepository _droidRepository { get; set; }
+
+        public StarWarsQuery(IDroidRepository _droidRepository)
         {
             Field<DroidType>(
               "hero",
-              resolve: context => new Droid { Id = 1, Name = "R2-D2" }
+              resolve: context => _droidRepository.Get(1)
             );
         }
     }

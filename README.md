@@ -165,3 +165,72 @@ namespace StarWars.Data.InMemory
     }
 }
 ```
+
+17. Use 'IDroidRepository' in StarWarsQuery
+```csharp
+using GraphQL.Types;
+using StarWars.Core.Data;
+
+namespace StarWars.Api.Models
+{
+    public class StarWarsQuery : ObjectGraphType
+    {
+        private IDroidRepository _droidRepository { get; set; }
+
+        public StarWarsQuery(IDroidRepository _droidRepository)
+        {
+            Field<DroidType>(
+              "hero",
+              resolve: context => _droidRepository.Get(1)
+            );
+        }
+    }
+}
+```
+
+18. Update cration on StarWarsQuery in GraphQLController
+```csharp
+// ...
+public async Task<IActionResult> Post([FromBody] GraphQLQuery query)
+{
+    var schema = new Schema { Query = new StarWarsQuery(new DroidRepository()) };
+// ...
+```
+
+19. Test using Postman
+
+20. Configure dependency injection in Startup.cs
+```csharp
+// ...
+public void ConfigureServices(IServiceCollection services)
+{
+    // Add framework services.
+    services.AddMvc();
+
+    services.AddTransient<StarWarsQuery>();
+    services.AddTransient<IDroidRepository, DroidRepository>();
+}
+// ...
+```
+
+
+21. Use constructor injection of StarWarsQuery in GraphQLController
+```csharp
+// ...
+public class GraphQLController : Controller
+{
+    private StarWarsQuery _starWarsQuery { get; set; }
+
+    public GraphQLController(StarWarsQuery starWarsQuery)
+    {
+        _starWarsQuery = starWarsQuery;
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Post([FromBody] GraphQLQuery query)
+    {
+        var schema = new Schema { Query = _starWarsQuery };
+// ...
+```
+
+

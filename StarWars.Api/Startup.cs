@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using StarWars.Core.Data;
+using StarWars.Data.InMemory;
+using StarWars.Api.Models;
 
 namespace StarWars.Api
 {
@@ -29,6 +32,9 @@ namespace StarWars.Api
         {
             // Add framework services.
             services.AddMvc();
+
+            services.AddTransient<StarWarsQuery>();
+            services.AddTransient<IDroidRepository, DroidRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

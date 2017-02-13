@@ -1,4 +1,4 @@
-﻿{
+{
   "dependencies": {
     "GraphQL": "0.14.6.657",
     "Microsoft.AspNetCore.Mvc": "1.1.1",
@@ -14,7 +14,8 @@
     "Microsoft.Extensions.Logging.Debug": "1.1.0",
     "Microsoft.Extensions.Options.ConfigurationExtensions": "1.1.0",
     "Microsoft.NETCore.App": "1.1.0",
-    "StarWars.Core": "1.0.0-*"
+    "StarWars.Core": "1.0.0-*",
+    "StarWars.Data": "1.0.0-*"
   },
 
   "tools": {
