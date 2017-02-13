@@ -1,30 +1,31 @@
 # Star Wars example with GraphQL for .NET, ASP.NET Core, Entity Framework Core
 
-1. Create 'StarWars' empty solution
+* Create 'StarWars' empty solution
 ![empty-solution](https://cloud.githubusercontent.com/assets/8171434/22863729/0831261c-f146-11e6-9fef-040e20462bfe.png)
 
-2. Add 'ASP.NET Core Web Application (.NET Core)' project named 'StarWars.Api'
+* Add 'ASP.NET Core Web Application (.NET Core)' project named 'StarWars.Api'
 ![aspnet-core-web-application](https://cloud.githubusercontent.com/assets/8171434/22863870/edcbf2f0-f147-11e6-96eb-6a8cc14c3588.png)
 
-3. Select Web API template
+* Select Web API template
 ![aspnet-core-web-api](https://cloud.githubusercontent.com/assets/8171434/22863872/eff07d80-f147-11e6-9614-d853da97d1aa.png)
 
-4. Update all NuGet packages
+* Update all NuGet packages
 ![update-all-nuget-packages](https://cloud.githubusercontent.com/assets/8171434/22864011/93533b2e-f149-11e6-883a-ead44bf1f403.png)
 
-5. Update project.json with correct runtime
+* Update project.json with correct runtime
 ```json
 "runtimes": {
    "win10-x64": { }
 }
 ```
-6. Install GraphQL NuGet package
+
+* Install GraphQL NuGet package
 ![install-graphql-nuget-package](https://cloud.githubusercontent.com/assets/8171434/22864254/50c06f70-f14e-11e6-80d2-6c94f3088c8a.png)
 
-7. Create 'StarWars.Core' project
+* Create 'StarWars.Core' project
 ![starwars-core-project](https://cloud.githubusercontent.com/assets/8171434/22866500/e4313996-f177-11e6-90ce-44843e588dff.png)
 
-8. Create 'Droid' model
+* Create 'Droid' model
 ```csharp
 namespace StarWars.Core.Models
 {
@@ -36,7 +37,7 @@ namespace StarWars.Core.Models
 }
 ```
 
-9. Create 'DroidType' model
+* Create 'DroidType' model
 ```csharp
 using GraphQL.Types;
 using StarWars.Core.Models;
@@ -53,7 +54,8 @@ namespace StarWars.Api.Models
     }
 }
 ```
-10. Create 'StarWarsQuery' model
+
+* Create 'StarWarsQuery' model
 ```csharp
 using GraphQL.Types;
 using StarWars.Core.Models;
@@ -73,7 +75,7 @@ namespace StarWars.Api.Models
 }
 ```
 
-11. Create 'GraphQLQuery' model
+* Create 'GraphQLQuery' model
 ```csharp
 namespace StarWars.Api.Models
 {
@@ -87,7 +89,7 @@ namespace StarWars.Api.Models
 }
 ```
 
-12. Create 'GraphQLController'
+* Create 'GraphQLController'
 ```csharp
 using GraphQL;
 using GraphQL.Types;
@@ -123,10 +125,10 @@ namespace StarWars.Api.Controllers
 }
 ```
 
-13. Test using Postman
+* Test using Postman
 ![postman-test-query](https://cloud.githubusercontent.com/assets/8171434/22866705/17985b54-f17b-11e6-848c-6482b45e4934.png)
 
-14. Create 'IDroidRepository' interface
+* Create 'IDroidRepository' interface
 ```csharp
 using StarWars.Core.Models;
 using System.Threading.Tasks;
@@ -139,10 +141,10 @@ namespace StarWars.Core.Data
     }
 }
 ```
-15. Create 'StarWars.Data' project
+* Create 'StarWars.Data' project
 ![starwars-data-project](https://cloud.githubusercontent.com/assets/8171434/22888090/dd357674-f204-11e6-8613-e2cac5087180.png)
 
-16. Create in memory 'DroidRepository'
+* Create in memory 'DroidRepository'
 ```csharp
 using StarWars.Core.Data;
 using System.Collections.Generic;
@@ -166,7 +168,7 @@ namespace StarWars.Data.InMemory
 }
 ```
 
-17. Use 'IDroidRepository' in StarWarsQuery
+* Use 'IDroidRepository' in StarWarsQuery
 ```csharp
 using GraphQL.Types;
 using StarWars.Core.Data;
@@ -188,7 +190,7 @@ namespace StarWars.Api.Models
 }
 ```
 
-18. Update cration on StarWarsQuery in GraphQLController
+* Update cration on StarWarsQuery in GraphQLController
 ```csharp
 // ...
 public async Task<IActionResult> Post([FromBody] GraphQLQuery query)
@@ -197,9 +199,9 @@ public async Task<IActionResult> Post([FromBody] GraphQLQuery query)
 // ...
 ```
 
-19. Test using Postman
+* Test using Postman
 
-20. Configure dependency injection in Startup.cs
+* Configure dependency injection in Startup.cs
 ```csharp
 // ...
 public void ConfigureServices(IServiceCollection services)
@@ -214,7 +216,7 @@ public void ConfigureServices(IServiceCollection services)
 ```
 
 
-21. Use constructor injection of StarWarsQuery in GraphQLController
+* Use constructor injection of StarWarsQuery in GraphQLController
 ```csharp
 // ...
 public class GraphQLController : Controller
