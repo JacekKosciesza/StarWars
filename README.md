@@ -1,5 +1,17 @@
 # Star Wars example with GraphQL for .NET, ASP.NET Core, Entity Framework Core
 
+## Examples
+* Basic - simple 'Hello GraphQL!' example based on console version from [GraphQL for .NET on GitHub](https://github.com/graphql-dotnet/graphql-dotnet),
+but using ASP.NET Core, Entity Framework Core and some best practices, patterns and principles like:
+    * DDD (Domain Driven Design) style hexagonal architecture    
+    * SOLID principle (especially Single Responsibility and Dependency Inversion)
+    * Repository pattern
+
+## Tutorials
+
+### Basic
+
+
 * Create 'StarWars' empty solution
 ![empty-solution](https://cloud.githubusercontent.com/assets/8171434/22863729/0831261c-f146-11e6-9fef-040e20462bfe.png)
 
