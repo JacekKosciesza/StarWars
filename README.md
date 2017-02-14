@@ -190,7 +190,7 @@ namespace StarWars.Api.Models
 }
 ```
 
-* Update cration on StarWarsQuery in GraphQLController
+* Update creation of StarWarsQuery in GraphQLController
 ```csharp
 // ...
 public async Task<IActionResult> Post([FromBody] GraphQLQuery query)
@@ -206,7 +206,6 @@ public async Task<IActionResult> Post([FromBody] GraphQLQuery query)
 // ...
 public void ConfigureServices(IServiceCollection services)
 {
-    // Add framework services.
     services.AddMvc();
 
     services.AddTransient<StarWarsQuery>();
@@ -242,31 +241,19 @@ public class GraphQLController : Controller
 * Create StarWarsContext
 ```csharp
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using StarWars.Core.Models;
 
 namespace StarWars.Data.EntityFramework
 {
     public class StarWarsContext : DbContext
     {
-        private readonly IConfigurationRoot _config;
-
-        public StarWarsContext() { }
-
-        public StarWarsContext(IConfigurationRoot config, DbContextOptions options)
+        public StarWarsContext(DbContextOptions options)
             : base(options)
         {
-            _config = config;
+            Database.EnsureCreated();
         }
 
         public DbSet<Droid> Droids { get; set; }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            base.OnConfiguring(optionsBuilder);
-
-            optionsBuilder.UseSqlServer(_config["ConnectionStrings:StarWarsDatabaseConnection"]);
-        }
     }
 }
 ```
@@ -314,40 +301,32 @@ namespace StarWars.Data.EntityFramework.Repositories
 }
 ```
 
-* Create seed data
+* Create seed data as an extension to StarWarsContext
 ```csharp
 using StarWars.Core.Models;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace StarWars.Data.EntityFramework.Seed
 {
-    public class StarWarsSeedData
+    public static class StarWarsSeedData
     {
-        private readonly StarWarsContext _db;
-        public StarWarsSeedData(StarWarsContext db)
+        public static void EnsureSeedData(this StarWarsContext db)
         {
-            _db = db;
-        }
-
-        public async Task EnsureSeedData()
-        {
-            if (!_db.Droids.Any())
+            if (!db.Droids.Any())
             {
                 var droid = new Droid
                 {
-                    Id = 1,
                     Name = "R2-D2"
                 };
-                _db.Droids.Add(droid);
-                await _db.SaveChangesAsync();
+                db.Droids.Add(droid);
+                db.SaveChanges();
             }
         }
     }
 }
 ```
 
-* Configure dependency injection and run seeder in Startup.cs
+* Configure dependency injection and run data seed in Startup.cs
 ```csharp
 // ...
 public void ConfigureServices(IServiceCollection services)
@@ -356,19 +335,20 @@ public void ConfigureServices(IServiceCollection services)
 
     services.AddTransient<StarWarsQuery>();
     services.AddTransient<IDroidRepository, DroidRepository>();
-    services.AddDbContext<StarWarsContext>();
-    services.AddTransient<StarWarsSeedData>();
+    services.AddDbContext<StarWarsContext>(options => 
+        options.UseSqlServer(Configuration["ConnectionStrings:StarWarsDatabaseConnection"])
+    );
 }
 
 public void Configure(IApplicationBuilder app, IHostingEnvironment env,
-                    ILoggerFactory loggerFactory, StarWarsSeedData seeder)
+                        ILoggerFactory loggerFactory, StarWarsContext db)
 {
     loggerFactory.AddConsole(Configuration.GetSection("Logging"));
     loggerFactory.AddDebug();
 
     app.UseMvc();
 
-    seeder.EnsureSeedData().Wait();
+    db.EnsureSeedData();
 }
 // ...
 ```

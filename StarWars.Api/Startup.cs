@@ -1,17 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using StarWars.Core.Data;
-using StarWars.Data.InMemory;
 using StarWars.Api.Models;
 using StarWars.Data.EntityFramework;
 using StarWars.Data.EntityFramework.Seed;
+using Microsoft.EntityFrameworkCore;
+using StarWars.Data.EntityFramework.Repositories;
 
 namespace StarWars.Api
 {
@@ -37,20 +34,21 @@ namespace StarWars.Api
 
             services.AddTransient<StarWarsQuery>();
             services.AddTransient<IDroidRepository, DroidRepository>();
-            services.AddDbContext<StarWarsContext>();
-            services.AddTransient<StarWarsSeedData>();
+            services.AddDbContext<StarWarsContext>(options => 
+                options.UseSqlServer(Configuration["ConnectionStrings:StarWarsDatabaseConnection"])
+            );
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env,
-                              ILoggerFactory loggerFactory, StarWarsSeedData seeder)
+                              ILoggerFactory loggerFactory, StarWarsContext db)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
             app.UseMvc();
 
-            seeder.EnsureSeedData().Wait();
+            db.EnsureSeedData();
         }
     }
 }
