@@ -352,3 +352,8 @@ public void Configure(IApplicationBuilder app, IHostingEnvironment env,
 }
 // ...
 ```
+* Run application and make sure database is created
+![ssms-starwars-database-created](https://cloud.githubusercontent.com/assets/8171434/22923521/1fb046da-f2a2-11e6-8e56-c00661e27318.png)
+
+* Final test using Postman
+![postman-test-query](https://cloud.githubusercontent.com/assets/8171434/22866705/17985b54-f17b-11e6-848c-6482b45e4934.png)
