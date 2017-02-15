@@ -20,7 +20,7 @@ but using ASP.NET Core, Entity Framework Core and some best practices, patterns 
     - [x] Automatic database creation
     - [x] Seed database data
     - [x] EF Migrations
-    - [ ] Graph*i*QL
+    - [x] Graph*i*QL
     - [ ] Unit Tests
     - [ ] Integration Tests
     - [ ] Continous Integration
