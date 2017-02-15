@@ -7,6 +7,25 @@ but using ASP.NET Core, Entity Framework Core and some best practices, patterns 
     * SOLID principle (especially Single Responsibility and Dependency Inversion)
     * Repository pattern
 
+## Roadmap
+- [x] Basic
+    - [x] Basic tutorial (step/screenshot/code)
+    - [ ] Advanced tutorial (steps explanation)
+    - [x] 3-Layers (Api, Core, Data) architecture
+    - [x] DDD (Domain Driven Design) hexagonal architecture
+    - [x] Dependency Inversion (deafult ASP.NET Core IoC container)
+    - [x] GraphQL controller
+    - [x] In Memory 'Droid' Repository
+    - [x] Entity Framework 'Droid' Repository
+    - [x] Automatic database creation
+    - [x] Seed database data
+    - [x] EF Migrations
+    - [ ] Graph*i*QL
+    - [ ] Unit Tests
+    - [ ] Integration Tests
+    - [ ] Continous Integration
+    
+
 ## Tutorials
 
 ### Basic
@@ -370,7 +389,7 @@ public void Configure(IApplicationBuilder app, IHostingEnvironment env,
 * Final test using Postman
 ![postman-test-query](https://cloud.githubusercontent.com/assets/8171434/22866705/17985b54-f17b-11e6-848c-6482b45e4934.png)
 
-#### Entity Framework migrations
+#### Entity Framework Migrations
 
 * Add 'Microsoft.EntityFrameworkCore.Design' NuGet package to 'StarWars.Data' project
 ![ef-design-nuget](https://cloud.githubusercontent.com/assets/8171434/22964859/fde4e42a-f35a-11e6-89ad-1b5dfeda4e67.png)
@@ -407,3 +426,169 @@ public void Configure(IApplicationBuilder app, IHostingEnvironment env,
 dotnet ef migrations add Inital -o .\EntityFramework\Migrations
 ```
 ![dotnet-ef-migrations](https://cloud.githubusercontent.com/assets/8171434/22965430/d8d02eda-f35d-11e6-8425-6edeaeaa88c9.png)
+
+#### Grahp*i*QL
+
+* Add NPM configuration file 'package.json' to StarWars.Api project
+![npm-configuration-file](https://cloud.githubusercontent.com/assets/8171434/22973053/b6e4c0a0-f37c-11e6-898b-938c50bd2f83.png)
+
+* Add GraphiQL dependencies and webpack bundle task
+```json
+{
+  "version": "1.0.0",
+  "name": "starwars-graphiql",
+  "private": true,
+  "scripts": {
+    "start": "webpack --progress"
+  },
+  "dependencies": {
+    "graphiql": "^0.7.8",
+    "graphql": "^0.7.0",
+    "isomorphic-fetch": "^2.1.1",
+    "react": "^15.3.1",
+    "react-dom": "^15.3.1"
+  },
+  "devDependencies": {
+    "babel": "^5.6.14",
+    "babel-loader": "^5.3.2",
+    "css-loader": "^0.24.0",
+    "extract-text-webpack-plugin": "^1.0.1",
+    "postcss-loader": "^0.10.1",
+    "style-loader": "^0.13.1",
+    "webpack": "^1.13.0"
+  }
+}
+```
+
+* Add webpack configuration 'webpack.config.js'
+```javascript
+var webpack = require('webpack');
+var ExtractTextPlugin = require('extract-text-webpack-plugin');
+
+var output = './wwwroot';
+
+module.exports = {
+    entry: {
+        'bundle': './Scripts/app.js'
+    },
+
+    output: {
+        path: output,
+        filename: '[name].js'
+    },
+
+    resolve: {
+        extensions: ['', '.js', '.json']
+    },
+
+    module: {
+        loaders: [
+          { test: /\.js/, loader: 'babel', exclude: /node_modules/ },
+          { test: /\.css$/, loader: ExtractTextPlugin.extract('style-loader', 'css-loader!postcss-loader') }
+        ]
+    },
+
+    plugins: [
+      new ExtractTextPlugin('style.css', { allChunks: true })
+    ]
+};
+```
+
+* Install 'NPM Task Runner' extension
+![npm-task-runner](https://cloud.githubusercontent.com/assets/8171434/22973925/2a6cd7ee-f380-11e6-89b8-b27fe68a6d1b.png)
+
+* Configure 'After Build' step in 'Task Runner Explorer'
+![after-build-task-runner-explorer](https://cloud.githubusercontent.com/assets/8171434/22974769/25727768-f384-11e6-96ca-8670b67b805c.png)
+```json
+  "-vs-binding": { "AfterBuild": [ "start" ] }
+```
+
+* Add 'Get' action to GraphQL controller and GraphiQL view (~/Views/GraphQL/index.cshtml)
+```csharp
+// ...
+public class GraphQLController : Controller
+{
+    // ...
+    [HttpGet]
+    public IActionResult Index()
+    {
+        return View();
+    }    
+// ...
+}
+```
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>GraphiQL</title>
+    <link rel="stylesheet" href="~/style.css" />
+</head>
+<body>
+    <div id="app"></div>
+    <script src="~/bundle.js" type="text/javascript"></script>
+</body>
+</html>
+```
+
+* Add GraphiQL scripts and styles (app.js and app.css to ~/GraphiQL)
+    * app.js
+    ```javascript
+    import React from 'react';
+    import ReactDOM from 'react-dom';
+    import GraphiQL from 'graphiql';
+    import fetch from 'isomorphic-fetch';
+    import 'graphiql/graphiql.css';
+    import './app.css';
+
+    function graphQLFetcher(graphQLParams) {
+        return fetch(window.location.origin + '/graphql', {
+            method: 'post',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(graphQLParams)
+        }).then(response => response.json());
+    }
+
+    ReactDOM.render(<GraphiQL fetcher={graphQLFetcher}/>, document.getElementById('app'));
+    ```
+    * app.css
+    ```css
+    html, body {
+        height: 100%;
+        margin: 0;
+        overflow: hidden;
+        width: 100%;
+    }
+
+    #app {
+        height: 100vh;
+    }
+    ```
+
+* Add static files support
+    * Add 'Microsoft.AspNetCore.StaticFiles' NuGet
+    ![static-files-nuget](https://cloud.githubusercontent.com/assets/8171434/22978442/fa3872d2-f392-11e6-8839-634f380fee51.png)
+
+    * Update configuration in 'Startup.cs'
+    ```csharp
+    // ...
+    public void Configure(IApplicationBuilder app, IHostingEnvironment env,
+                              ILoggerFactory loggerFactory, StarWarsContext db)
+    {
+        loggerFactory.AddConsole(Configuration.GetSection("Logging"));
+        loggerFactory.AddDebug();
+
+        app.UseStaticFiles();
+        app.UseMvc();
+
+        db.EnsureSeedData();
+    }
+    // ...
+    ```
+* Build project and check if bundles were created by webpack under ~/wwwroot
+![bundles-created-by-webpack](https://cloud.githubusercontent.com/assets/8171434/22978874/b01d6372-f394-11e6-80eb-8b3f8fbe7ad0.png)
+
+* Run project and enjoy Graph*i*QL
+![graphiql](https://cloud.githubusercontent.com/assets/8171434/22978970/fe8700fe-f394-11e6-9821-f1d0606a2b9b.png)

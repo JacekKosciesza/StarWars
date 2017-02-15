@@ -13,7 +13,8 @@ namespace StarWars.Data.EntityFramework
         public StarWarsContext(DbContextOptions options)
             : base(options)
         {
-            Database.EnsureCreated();
+            //Database.EnsureCreated();
+            //Database.Migrate();
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
