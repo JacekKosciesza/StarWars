@@ -369,3 +369,36 @@ public void Configure(IApplicationBuilder app, IHostingEnvironment env,
 
 * Final test using Postman
 ![postman-test-query](https://cloud.githubusercontent.com/assets/8171434/22866705/17985b54-f17b-11e6-848c-6482b45e4934.png)
+
+#### Entity Framework migrations
+
+* Add 'Microsoft.EntityFrameworkCore.Design' NuGet package to 'StarWars.Data' project
+![ef-design-nuget](https://cloud.githubusercontent.com/assets/8171434/22964859/fde4e42a-f35a-11e6-89ad-1b5dfeda4e67.png)
+
+* Add 'Microsoft.EntityFrameworkCore.Tools.DotNet' NuGet package to 'StarWars.Data' project
+![ef-tools-dotnet-nuget](https://cloud.githubusercontent.com/assets/8171434/22964861/ff9afdf4-f35a-11e6-8e42-87ed30009877.png)
+
+* Add tools section in project.json (StarWars.Data)
+```json
+"tools": {
+    "Microsoft.EntityFrameworkCore.Tools.DotNet": "1.1.0-preview4-final"
+}
+```
+* Add official workaround for problems with targeting class library (Modify your class library to be a startup application)
+    * Add main entry point
+    ```csharp
+    namespace StarWars.Data.EntityFramework.Workaround
+    {
+        // WORKAROUND: https://docs.efproject.net/en/latest/miscellaneous/cli/dotnet.html#targeting-class-library-projects-is-not-supported
+        public static class Program
+        {
+            public static void Main() { }
+        }
+    }
+    ```
+    * Add build option in project.json
+    ```json
+    "buildOptions": {
+        "emitEntryPoint": true
+    }
+    ```
