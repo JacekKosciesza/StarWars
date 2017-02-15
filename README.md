@@ -592,3 +592,9 @@ public class GraphQLController : Controller
 
 * Run project and enjoy Graph*i*QL
 ![graphiql](https://cloud.githubusercontent.com/assets/8171434/22978970/fe8700fe-f394-11e6-9821-f1d0606a2b9b.png)
+
+#### Unit Tests
+
+* Create 'Class Library (.NET Core)' type 'StarWars.Tests.Unit' project
+![unit-tests-project](https://cloud.githubusercontent.com/assets/8171434/22991495/ae9ead08-f3bc-11e6-83e0-17ee0015823f.png)
+
