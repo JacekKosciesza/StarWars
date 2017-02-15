@@ -402,3 +402,8 @@ public void Configure(IApplicationBuilder app, IHostingEnvironment env,
         "emitEntryPoint": true
     }
     ```
+* Run migrations command from the console
+```
+dotnet ef migrations add Inital -o .\EntityFramework\Migrations
+```
+![dotnet-ef-migrations](https://cloud.githubusercontent.com/assets/8171434/22965430/d8d02eda-f35d-11e6-8425-6edeaeaa88c9.png)
