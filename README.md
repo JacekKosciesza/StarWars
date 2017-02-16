@@ -20,6 +20,8 @@ but using ASP.NET Core, Entity Framework Core and some best practices, patterns 
     - [x] Graph*i*QL
     - [ ] Unit Tests
     - [ ] Integration Tests
+    - [ ] Logs
+    - [ ] Code Coverage
     - [ ] Continous Integration
     
 
