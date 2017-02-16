@@ -595,3 +595,94 @@ public class GraphQLController : Controller
 * Create 'Class Library (.NET Core)' type 'StarWars.Tests.Unit' project
 ![unit-tests-project](https://cloud.githubusercontent.com/assets/8171434/22991495/ae9ead08-f3bc-11e6-83e0-17ee0015823f.png)
 
+* Install 'xunit' NuGet package in StarWars.Tests.Unit project
+![xunit-nuget](https://cloud.githubusercontent.com/assets/8171434/23019197/6236a94a-f441-11e6-86fd-2d2195366d2a.png)
+
+* Install 'dotnet-test-xunit' NuGet package in StarWars.Tests.Unit project
+![dotnet-test-xunit-nuget](https://cloud.githubusercontent.com/assets/8171434/23020067/94a2a3da-f445-11e6-8674-0b33847435c1.png)
+
+* Make changes to project.json
+    * Set 'testRunner'
+    * Reference 'StarWars.Data' project
+    * Set 'runtimes'
+```json
+{
+  "version": "1.0.0-*",
+  "testRunner": "xunit",
+  "dependencies": {
+    "dotnet-test-xunit": "2.2.0-preview2-build1029",
+    "Microsoft.NETCore.App": "1.1.0",
+    "xunit": "2.1.0",
+    "StarWars.Data": {
+      "target": "project"
+    }
+  },
+
+  "frameworks": {
+    "netcoreapp1.1": {
+      "imports": [
+        "dotnet5.6",
+        "portable-net45+win8"
+      ]
+    }
+  },
+
+  "runtimes": {
+    "win10-x64": {}
+  }
+}
+```
+
+* Create first test for in memory droid repository
+```csharp
+using StarWars.Data.InMemory;
+using Xunit;
+
+namespace StarWars.Tests.Unit.Data.InMemory
+{
+    public class DroidRepositoryShould
+    {
+        private readonly DroidRepository _droidRepository;
+        public DroidRepositoryShould()
+        {
+            // Given
+            _droidRepository = new DroidRepository();
+        }
+
+        [Fact]
+        public async void ReturnR2D2DroidGivenIdOf1()
+        {
+            // When
+            var droid = await _droidRepository.Get(1);
+
+            // Then
+            Assert.NotNull(droid);
+            Assert.Equal("WRONG_NAME", droid.Name);
+        }
+    }
+}
+```
+
+* Build and make sure that test is discovered by 'Test Explorer'
+![test-explorer-first-unit-test](https://cloud.githubusercontent.com/assets/8171434/23020737/c1b268ee-f448-11e6-96de-80928174a335.png)
+
+* Run test - it should fail (we want to make sure that we are testing the right thing)
+![first-unit-test-fail](https://cloud.githubusercontent.com/assets/8171434/23022083/56733e6c-f44f-11e6-8f64-84e9da06d879.png)
+
+* Fix test
+```csharp
+// ...
+[Fact]
+public async void ReturnR2D2DroidGivenIdOf1()
+{
+    // When
+    var droid = await _droidRepository.Get(1);
+
+    // Then
+    Assert.NotNull(droid);
+    Assert.Equal("R2-D2", droid.Name);
+}
+// ...
+```
+* Run test again - it should pass
+![first-unit-test-pass](https://cloud.githubusercontent.com/assets/8171434/23022004/ff769a14-f44e-11e6-90d8-12d33eaac801.png)

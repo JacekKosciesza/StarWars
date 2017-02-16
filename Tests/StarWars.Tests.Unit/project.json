@@ -1,8 +1,13 @@
 ﻿{
   "version": "1.0.0-*",
-
+  "testRunner": "xunit",
   "dependencies": {
-    "Microsoft.NETCore.App": "1.1.0"
+    "dotnet-test-xunit": "2.2.0-preview2-build1029",
+    "Microsoft.NETCore.App": "1.1.0",
+    "xunit": "2.1.0",
+    "StarWars.Data": {
+      "target": "project"
+    }
   },
 
   "frameworks": {
@@ -12,5 +17,9 @@
         "portable-net45+win8"
       ]
     }
+  },
+
+  "runtimes": {
+    "win10-x64": {}
   }
 }
