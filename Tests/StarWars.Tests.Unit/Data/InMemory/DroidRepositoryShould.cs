@@ -20,7 +20,7 @@ namespace StarWars.Tests.Unit.Data.InMemory
 
             // Then
             Assert.NotNull(droid);
-            Assert.Equal("WRONG_NAME", droid.Name);
+            Assert.Equal("R2-D2", droid.Name);
         }
     }
 }
