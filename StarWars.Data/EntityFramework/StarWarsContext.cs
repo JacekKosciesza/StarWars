@@ -27,6 +27,6 @@ namespace StarWars.Data.EntityFramework
             base.OnConfiguring(optionsBuilder);
         }
 
-        public DbSet<Droid> Droids { get; set; }
+        public virtual DbSet<Droid> Droids { get; set; }
     }
 }

@@ -688,3 +688,63 @@ public async void ReturnR2D2DroidGivenIdOf1()
 ```
 * Run test again - it should pass
 ![first-unit-test-pass](https://cloud.githubusercontent.com/assets/8171434/23022004/ff769a14-f44e-11e6-90d8-12d33eaac801.png)
+
+* Install 'Moq' NuGet package
+![moq-nuget](https://cloud.githubusercontent.com/assets/8171434/23029811/03d08832-f46c-11e6-8b63-1d458e16c37d.png)
+
+* Install 'Microsoft.EntityFrameworkCore.InMemory' NuGet package
+![ef-in-memory-nuget](https://cloud.githubusercontent.com/assets/8171434/23035364/1c0eb1f4-f47f-11e6-852d-765a4e2d4a0e.png)
+
+* Add reference to 'StarWars.Core' in project.json
+```json
+{
+  "dependencies": {
+    "StarWars.Core": {
+      "target": "project"
+    }
+  }
+}
+```
+
+* Create EF droid repository unit test
+```csharp
+using Microsoft.EntityFrameworkCore;
+using StarWars.Core.Models;
+using StarWars.Data.EntityFramework;
+using StarWars.Data.EntityFramework.Repositories;
+using Xunit;
+
+namespace StarWars.Tests.Unit.Data.EntityFramework.Repositories
+{
+    public class DroidRepositoryShould
+    {
+        private readonly DroidRepository _droidRepository;
+        public DroidRepositoryShould()
+        {
+            // Given
+            // https://docs.microsoft.com/en-us/ef/core/miscellaneous/testing/in-memory
+            var options = new DbContextOptionsBuilder<StarWarsContext>()
+                .UseInMemoryDatabase(databaseName: "StarWars")
+                .Options;
+            using (var context = new StarWarsContext(options))
+            {
+                context.Droids.Add(new Droid { Id = 1, Name = "R2-D2" });
+                context.SaveChanges();
+            }
+            var starWarsContext = new StarWarsContext(options);
+            _droidRepository = new DroidRepository(starWarsContext);
+        }
+
+        [Fact]
+        public async void ReturnR2D2DroidGivenIdOf1()
+        {
+            // When
+            var droid = await _droidRepository.Get(1);
+
+            // Then
+            Assert.NotNull(droid);
+            Assert.Equal("R2-D2", droid.Name);
+        }
+    }
+}
+```
