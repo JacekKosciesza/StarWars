@@ -895,3 +895,7 @@ namespace StarWars.Tests.Unit.Data.EntityFramework.Repositories
 * Install (xunit.runner.visualstudio) dependency (Microsoft.DotNet.InternalAbstractions)
 ![microsoft-dotnet-internal-abstractions-nuget](https://cloud.githubusercontent.com/assets/8171434/23066097/24ff49f0-f519-11e6-9a1c-8f6645bf66a4.png)
 
+#### Integration Tests
+
+* Create 'xUnit Test Project (.NET Core)' type 'StarWars.Tests.Integration' project
+![integration-tests-project](https://cloud.githubusercontent.com/assets/8171434/23093375/6b3f9fe6-f5e1-11e6-8d4c-d89f16ef3204.png)

@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StarWars.Data", "StarWars.D
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StarWars.Tests.Unit", "Tests\StarWars.Tests.Unit\StarWars.Tests.Unit.csproj", "{D387076C-3911-4320-82D7-958A70295DA3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StarWars.Tests.Integration", "Tests\StarWars.Tests.Integration\StarWars.Tests.Integration.csproj", "{27787982-CBAE-4A79-BB48-E12C5ECD189D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -71,11 +73,24 @@ Global
 		{D387076C-3911-4320-82D7-958A70295DA3}.Release|x64.Build.0 = Release|x64
 		{D387076C-3911-4320-82D7-958A70295DA3}.Release|x86.ActiveCfg = Release|x86
 		{D387076C-3911-4320-82D7-958A70295DA3}.Release|x86.Build.0 = Release|x86
+		{27787982-CBAE-4A79-BB48-E12C5ECD189D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{27787982-CBAE-4A79-BB48-E12C5ECD189D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{27787982-CBAE-4A79-BB48-E12C5ECD189D}.Debug|x64.ActiveCfg = Debug|x64
+		{27787982-CBAE-4A79-BB48-E12C5ECD189D}.Debug|x64.Build.0 = Debug|x64
+		{27787982-CBAE-4A79-BB48-E12C5ECD189D}.Debug|x86.ActiveCfg = Debug|x86
+		{27787982-CBAE-4A79-BB48-E12C5ECD189D}.Debug|x86.Build.0 = Debug|x86
+		{27787982-CBAE-4A79-BB48-E12C5ECD189D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{27787982-CBAE-4A79-BB48-E12C5ECD189D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{27787982-CBAE-4A79-BB48-E12C5ECD189D}.Release|x64.ActiveCfg = Release|x64
+		{27787982-CBAE-4A79-BB48-E12C5ECD189D}.Release|x64.Build.0 = Release|x64
+		{27787982-CBAE-4A79-BB48-E12C5ECD189D}.Release|x86.ActiveCfg = Release|x86
+		{27787982-CBAE-4A79-BB48-E12C5ECD189D}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{D387076C-3911-4320-82D7-958A70295DA3} = {C3A61AED-283C-4D92-A681-4F863FA00608}
+		{27787982-CBAE-4A79-BB48-E12C5ECD189D} = {C3A61AED-283C-4D92-A681-4F863FA00608}
 	EndGlobalSection
 EndGlobal
