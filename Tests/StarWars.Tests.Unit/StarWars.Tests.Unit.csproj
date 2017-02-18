@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp1.1</TargetFramework>
+    <AssemblyName>StarWars.Tests.Unit</AssemblyName>
+    <PackageId>StarWars.Tests.Unit</PackageId>
+    <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
+    <RuntimeIdentifiers>win10-x64</RuntimeIdentifiers>
+    <RuntimeFrameworkVersion>1.1.0</RuntimeFrameworkVersion>
+    <PackageTargetFallback>$(PackageTargetFallback);dotnet5.6;portable-net45+win8</PackageTargetFallback>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.DotNet.InternalAbstractions" Version="1.0.500-preview2-1-003177" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.0-preview-20170210-02" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0-rc3-build1252" />
+    <PackageReference Include="Moq" Version="4.6.38-alpha" />
+    <PackageReference Include="xunit" Version="2.2.0-rc3-build3528" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="1.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\StarWars.Api\StarWars.Api.csproj" />
+    <ProjectReference Include="..\..\StarWars.Core\StarWars.Core.csproj" />
+    <ProjectReference Include="..\..\StarWars.Data\StarWars.Data.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
+  </ItemGroup>
+
+</Project>

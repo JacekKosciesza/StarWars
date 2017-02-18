@@ -9,11 +9,13 @@ namespace StarWars.Api.Controllers
     [Route("graphql")]
     public class GraphQLController : Controller
     {
-        private StarWarsQuery _starWarsQuery { get; set; }
+        private IDocumentExecuter _documentExecuter { get; set; }
+        private ISchema _schema { get; set; }
 
-        public GraphQLController(StarWarsQuery starWarsQuery)
+        public GraphQLController(IDocumentExecuter documentExecuter, ISchema schema)
         {
-            _starWarsQuery = starWarsQuery;
+            _documentExecuter = documentExecuter;
+            _schema = schema;
         }
 
         [HttpGet]
@@ -25,18 +27,12 @@ namespace StarWars.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] GraphQLQuery query)
         {
-            var schema = new Schema { Query = _starWarsQuery };
-
-            var result = await new DocumentExecuter().ExecuteAsync(_ =>
-            {
-                _.Schema = schema;
-                _.Query = query.Query;
-
-            }).ConfigureAwait(false);
+            var executionOptions = new ExecutionOptions { Schema = _schema, Query = query.Query };
+            var result = await _documentExecuter.ExecuteAsync(executionOptions).ConfigureAwait(false);
 
             if (result.Errors?.Count > 0)
             {
-                return BadRequest();
+                return BadRequest(result.Errors);
             }
 
             return Ok(result);

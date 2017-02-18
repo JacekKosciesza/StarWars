@@ -9,6 +9,8 @@ using StarWars.Data.EntityFramework;
 using StarWars.Data.EntityFramework.Seed;
 using Microsoft.EntityFrameworkCore;
 using StarWars.Data.EntityFramework.Repositories;
+using GraphQL.Types;
+using GraphQL;
 
 namespace StarWars.Api
 {
@@ -37,6 +39,9 @@ namespace StarWars.Api
             services.AddDbContext<StarWarsContext>(options => 
                 options.UseSqlServer(Configuration["ConnectionStrings:StarWarsDatabaseConnection"])
             );
+            services.AddTransient<IDocumentExecuter, DocumentExecuter>();
+            var sp = services.BuildServiceProvider();
+            services.AddTransient<ISchema>(_ => new Schema { Query = sp.GetService<StarWarsQuery>() });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -6,8 +6,8 @@ but using ASP.NET Core, Entity Framework Core and some best practices, patterns 
 
 ## Roadmap
 - [x] Basic
-    - [x] Basic tutorial (step/screenshot/code)
-    - [ ] Advanced tutorial (steps explanation)
+    - [x] Simple tutorial (step/screenshot/code)
+    - [ ] Detailed tutorial (steps explanation)
     - [x] 3-Layers (Api, Core, Data) architecture
     - [x] DDD (Domain Driven Design) hexagonal architecture
     - [x] Dependency Inversion (deafult ASP.NET Core IoC container)
@@ -18,7 +18,8 @@ but using ASP.NET Core, Entity Framework Core and some best practices, patterns 
     - [x] Seed database data
     - [x] EF Migrations
     - [x] Graph*i*QL
-    - [ ] Unit Tests
+    - [x] Unit Tests
+    - [x] Visual Studio 2017 RC upgrade
     - [ ] Integration Tests
     - [ ] Logs
     - [ ] Code Coverage
@@ -748,3 +749,149 @@ namespace StarWars.Tests.Unit.Data.EntityFramework.Repositories
     }
 }
 ```
+
+* Create GraphQLController unit test
+    * First refactor controller to be more testable by using constructor injection
+    ```csharp
+    using GraphQL;
+    using GraphQL.Types;
+    using Microsoft.AspNetCore.Mvc;
+    using StarWars.Api.Models;
+    using System.Threading.Tasks;
+
+    namespace StarWars.Api.Controllers
+    {
+        [Route("graphql")]
+        public class GraphQLController : Controller
+        {
+            private IDocumentExecuter _documentExecuter { get; set; }
+            private ISchema _schema { get; set; }
+
+            public GraphQLController(IDocumentExecuter documentExecuter, ISchema schema)
+            {
+                _documentExecuter = documentExecuter;
+                _schema = schema;
+            }
+
+            [HttpGet]
+            public IActionResult Index()
+            {
+                return View();
+            }
+
+            [HttpPost]
+            public async Task<IActionResult> Post([FromBody] GraphQLQuery query)
+            {
+                var executionOptions = new ExecutionOptions { Schema = _schema, Query = query.Query };
+                var result = await _documentExecuter.ExecuteAsync(executionOptions).ConfigureAwait(false);
+
+                if (result.Errors?.Count > 0)
+                {
+                    return BadRequest(result.Errors);
+                }
+
+                return Ok(result);
+            }
+        }
+    }
+    ```
+    * Configure dependency injection in 'Startup.cs'
+    ```csharp
+    // ...
+    public void ConfigureServices(IServiceCollection services)
+    {
+        // ...        
+        services.AddTransient<IDocumentExecuter, DocumentExecuter>();
+        var sp = services.BuildServiceProvider();
+        services.AddTransient<ISchema>(_ => new Schema { Query = sp.GetService<StarWarsQuery>() });
+    }
+    // ...
+    ```
+    * Create test for 'Index' and 'Post' actions
+    ```csharp
+    using GraphQL;
+    using GraphQL.Types;
+    using Microsoft.AspNetCore.Mvc;
+    using Moq;
+    using StarWars.Api.Controllers;
+    using StarWars.Api.Models;
+    using System.Threading.Tasks;
+    using Xunit;
+
+    namespace StarWars.Tests.Unit.Api.Controllers
+    {
+        public class GraphQLControllerShould
+        {
+            private GraphQLController _graphqlController { get; set; }
+
+            ExecutionOptions ddd()
+            {
+                return new ExecutionOptions();
+            }
+
+            public GraphQLControllerShould()
+            {
+                // Given
+                var documentExecutor = new Mock<IDocumentExecuter>();
+                documentExecutor.Setup(x => x.ExecuteAsync(It.IsAny<ExecutionOptions>())).Returns(Task.FromResult(new ExecutionResult()));
+                var schema = new Mock<ISchema>();
+                _graphqlController = new GraphQLController(documentExecutor.Object, schema.Object);
+            }
+
+            [Fact]
+            public void ReturnNotNullViewResult()
+            {
+                // When
+                var result = _graphqlController.Index() as ViewResult;
+
+                // Then
+                Assert.NotNull(result);
+                Assert.IsType<ViewResult>(result);
+            }
+
+            [Fact]
+            public async void ReturnNotNullExecutionResult()
+            {
+                // Given
+                var query = new GraphQLQuery { Query = @"{ ""query"": ""query { hero { id name } }""" };
+
+                // When
+                var result = await _graphqlController.Post(query);
+
+                // Then
+                Assert.NotNull(result);
+                var okObjectResult =  Assert.IsType<OkObjectResult>(result);
+                var executionResult = okObjectResult.Value;
+                Assert.NotNull(executionResult);
+            }
+        }
+    }
+    ```
+
+#### Visual Studio 2017 RC upgrade
+
+* Open solution in VS 2017 and let the upgrade tool do the job
+![vs-2017-rc-upgrade](https://cloud.githubusercontent.com/assets/8171434/23065886/0d9aae72-f518-11e6-8f60-f9c226c6b49a.png)
+
+* Upgrade of 'StarWars.Tests.Unit' failed, so I had to remove all project dependencies and reload it
+```json
+{
+  "dependencies": {
+    // remove this:
+    "StarWars.Data": {
+      "target": "project"
+    },
+    "StarWars.Core": {
+      "target": "project"
+    }
+    // ...
+  }
+}
+```
+
+* Replace old test txplorer runner for the xUnit.net framework (dotnet-test-xunit) with new one (xunit.runner.visualstudio)
+![xunit-runner-visualstudio-nuget](https://cloud.githubusercontent.com/assets/8171434/23066060/e808053c-f518-11e6-8426-5398565ff8a1.png)
+
+* Install (xunit.runner.visualstudio) dependency (Microsoft.DotNet.InternalAbstractions)
+![microsoft-dotnet-internal-abstractions-nuget](https://cloud.githubusercontent.com/assets/8171434/23066097/24ff49f0-f519-11e6-9a1c-8f6645bf66a4.png)
+

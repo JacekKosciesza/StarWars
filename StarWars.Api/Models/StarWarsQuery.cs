@@ -7,6 +7,8 @@ namespace StarWars.Api.Models
     {
         private IDroidRepository _droidRepository { get; set; }
 
+        public StarWarsQuery() { }
+
         public StarWarsQuery(IDroidRepository _droidRepository)
         {
             Field<DroidType>(
