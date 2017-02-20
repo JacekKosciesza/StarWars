@@ -824,11 +824,6 @@ namespace StarWars.Tests.Unit.Data.EntityFramework.Repositories
         {
             private GraphQLController _graphqlController { get; set; }
 
-            ExecutionOptions ddd()
-            {
-                return new ExecutionOptions();
-            }
-
             public GraphQLControllerShould()
             {
                 // Given
@@ -899,3 +894,16 @@ namespace StarWars.Tests.Unit.Data.EntityFramework.Repositories
 
 * Create 'xUnit Test Project (.NET Core)' type 'StarWars.Tests.Integration' project
 ![integration-tests-project](https://cloud.githubusercontent.com/assets/8171434/23093375/6b3f9fe6-f5e1-11e6-8d4c-d89f16ef3204.png)
+
+* Change target framework from 'netcoreapp1.0' to 'netcoreapp1.1'
+```xml
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>    
+    <TargetFramework>netcoreapp1.1</TargetFramework>
+  </PropertyGroup>
+  <!--...-->
+</Project>
+```
+
+* Install 'Microsoft.AspNetCore.TestHost' NuGet package
+![test-host-nuget](https://cloud.githubusercontent.com/assets/8171434/23100598/a5576138-f685-11e6-9ba1-aa04e9a31917.png)

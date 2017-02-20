@@ -13,11 +13,6 @@ namespace StarWars.Tests.Unit.Api.Controllers
     {
         private GraphQLController _graphqlController { get; set; }
 
-        ExecutionOptions ddd()
-        {
-            return new ExecutionOptions();
-        }
-
         public GraphQLControllerShould()
         {
             // Given
