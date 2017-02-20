@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp1.1</TargetFramework>
@@ -30,6 +30,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Server.IISIntegration.Tools" Version="1.1.0-preview4-final" />
     <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="1.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="1.1.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="1.1.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="1.1.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="1.1.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="1.1.0" />

@@ -907,3 +907,81 @@ namespace StarWars.Tests.Unit.Data.EntityFramework.Repositories
 
 * Install 'Microsoft.AspNetCore.TestHost' NuGet package
 ![test-host-nuget](https://cloud.githubusercontent.com/assets/8171434/23100598/a5576138-f685-11e6-9ba1-aa04e9a31917.png)
+
+* Use EF in memory database for 'Test' evironment
+    * Install 'Microsoft.EntityFrameworkCore.InMemory' NuGet package
+    ![ef-in-memory-nuget-api-project](https://cloud.githubusercontent.com/assets/8171434/23127639/14204be2-f77c-11e6-81de-336d88cb5db7.png)
+
+    * Configure it in 'Startup.cs'
+    ```csharp
+    // ...
+    private IHostingEnvironment Env { get; set; }
+
+    public class Startup
+    {
+        // ...
+        Env = env;
+    }
+
+    public void ConfigureServices(IServiceCollection services)
+    {
+        // ...
+        if (Env.IsEnvironment("Test"))
+        {
+            services.AddDbContext<StarWarsContext>(options =>
+                options.UseInMemoryDatabase(databaseName: "StarWars"));
+        }
+        else
+        {
+            services.AddDbContext<StarWarsContext>(options =>
+                options.UseSqlServer(Configuration["ConnectionStrings:StarWarsDatabaseConnection"]));
+        }
+        // ...
+    }
+    // ...
+    ```
+* Create integration test for GraphQL query (POST)
+```csharp
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.TestHost;
+using StarWars.Api;
+using System.Net.Http;
+using System.Text;
+using Xunit;
+
+namespace StarWars.Tests.Integration.Api.Controllers
+{
+    public class GraphQLControllerShould
+    {
+        private readonly TestServer _server;
+        private readonly HttpClient _client;
+
+        public GraphQLControllerShould()
+        {
+            _server = new TestServer(new WebHostBuilder()
+                .UseEnvironment("Test")
+                .UseStartup<Startup>()
+            );
+            _client = _server.CreateClient();
+        }
+
+        [Fact]
+        public async void ReturnR2D2Droid()
+        {
+            // Given
+            var query = @"{
+                ""query"": ""query { hero { id name } }""
+            }";
+            var content = new StringContent(query, Encoding.UTF8, "application/json");
+
+            // When
+            var response = await _client.PostAsync("/graphql", content);
+
+            // Then
+            response.EnsureSuccessStatusCode();
+            var responseString = await response.Content.ReadAsStringAsync();
+            Assert.Contains("R2-D2", responseString);
+        }
+    }
+}
+```
