@@ -1,4 +1,6 @@
-﻿using StarWars.Data.InMemory;
+﻿using Microsoft.Extensions.Logging;
+using Moq;
+using StarWars.Data.InMemory;
 using Xunit;
 
 namespace StarWars.Tests.Unit.Data.InMemory
@@ -9,7 +11,8 @@ namespace StarWars.Tests.Unit.Data.InMemory
         public DroidRepositoryShould()
         {
             // Given
-            _droidRepository = new DroidRepository();
+            var logger = new Mock<ILogger<DroidRepository>>();
+            _droidRepository = new DroidRepository(logger.Object);
         }
 
         [Fact]

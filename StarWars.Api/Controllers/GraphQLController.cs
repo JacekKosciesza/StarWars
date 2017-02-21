@@ -1,6 +1,8 @@
 ﻿using GraphQL;
 using GraphQL.Types;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using StarWars.Api.Models;
 using System.Threading.Tasks;
 
@@ -11,16 +13,19 @@ namespace StarWars.Api.Controllers
     {
         private IDocumentExecuter _documentExecuter { get; set; }
         private ISchema _schema { get; set; }
+        private readonly ILogger _logger;
 
-        public GraphQLController(IDocumentExecuter documentExecuter, ISchema schema)
+        public GraphQLController(IDocumentExecuter documentExecuter, ISchema schema, ILogger<GraphQLController> logger)
         {
             _documentExecuter = documentExecuter;
             _schema = schema;
+            _logger = logger;
         }
 
         [HttpGet]
         public IActionResult Index()
         {
+            _logger.LogInformation("Got request for GraphiQL. Sending GUI back");
             return View();
         }
 
@@ -32,9 +37,11 @@ namespace StarWars.Api.Controllers
 
             if (result.Errors?.Count > 0)
             {
-                return BadRequest(result.Errors);
+                _logger.LogError("GraphQL errors: {0}", result.Errors);
+                return BadRequest(result);
             }
 
+            _logger.LogDebug("GraphQL execution result: {result}", JsonConvert.SerializeObject(result.Data));
             return Ok(result);
         }
     }

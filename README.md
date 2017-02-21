@@ -20,8 +20,8 @@ but using ASP.NET Core, Entity Framework Core and some best practices, patterns 
     - [x] Graph*i*QL
     - [x] Unit Tests
     - [x] Visual Studio 2017 RC upgrade
-    - [ ] Integration Tests
-    - [ ] Logs
+    - [x] Integration Tests
+    - [x] Logs
     - [ ] Code Coverage
     - [ ] Continous Integration
     
@@ -985,3 +985,186 @@ namespace StarWars.Tests.Integration.Api.Controllers
     }
 }
 ```
+#### Logs
+
+* Make sure that logger is configured in Startup.cs
+```csharp
+public void Configure(IApplicationBuilder app, IHostingEnvironment env,
+                              ILoggerFactory loggerFactory, StarWarsContext db)
+{
+    loggerFactory.AddConsole(Configuration.GetSection("Logging"));
+    loggerFactory.AddDebug();
+    // ...
+}
+```
+
+* Override ToString method of GraphQLQuery class
+```csharp
+public override string ToString()
+{
+    var builder = new StringBuilder();
+    builder.AppendLine();
+    if (!string.IsNullOrWhiteSpace(OperationName))
+    {
+        builder.AppendLine($"OperationName = {OperationName}");
+    }
+    if (!string.IsNullOrWhiteSpace(NamedQuery))
+    {
+        builder.AppendLine($"NamedQuery = {NamedQuery}");
+    }
+    if (!string.IsNullOrWhiteSpace(Query))
+    {
+        builder.AppendLine($"Query = {Query}");
+    }
+    if (!string.IsNullOrWhiteSpace(Variables))
+    {
+        builder.AppendLine($"Variables = {Variables}");
+    }
+
+    return builder.ToString();
+}
+```
+* Add logger to GraphQLController
+```csharp
+public class GraphQLController : Controller
+{
+    // ...
+    private readonly ILogger _logger;
+
+    public GraphQLController(IDocumentExecuter documentExecuter, ISchema schema, ILogger<GraphQLController> logger)
+    {
+        // ...
+        _logger = logger;
+    }
+
+    [HttpGet]
+    public IActionResult Index()
+    {
+        _logger.LogInformation("Got request for GraphiQL. Sending GUI back");
+        return View();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Post([FromBody] GraphQLQuery query)
+    {
+        // ...
+        if (result.Errors?.Count > 0)
+        {
+            _logger.LogError("GraphQL errors: {0}", result.Errors);
+            return BadRequest(result);
+        }
+
+        _logger.LogDebug("GraphQL execution result: {result}", JsonConvert.SerializeObject(result.Data));
+        return Ok(result);
+    }
+}
+```
+
+* Add logger to DroidRepository
+```csharp
+namespace StarWars.Data.EntityFramework.Repositories
+{
+    public class DroidRepository : IDroidRepository
+    {
+        private StarWarsContext _db { get; set; }
+        private readonly ILogger _logger;
+
+        public DroidRepository(StarWarsContext db, ILogger<DroidRepository> logger)
+        {
+            _db = db;
+            _logger = logger;
+        }
+
+        public Task<Droid> Get(int id)
+        {
+            _logger.LogInformation("Get droid with id = {id}", id);
+            return _db.Droids.FirstOrDefaultAsync(droid => droid.Id == id);
+        }
+    }
+}
+```
+
+* Add logger to StarWarsContext
+```csharp
+namespace StarWars.Data.EntityFramework
+{
+    public class StarWarsContext : DbContext
+    {
+        public readonly ILogger _logger;
+
+        public StarWarsContext(DbContextOptions options, ILogger<StarWarsContext> logger)
+            : base(options)
+        {
+            _logger = logger;
+            // ...
+        }
+    }
+}
+```
+
+* Add logger to StarWarsSeedData
+```csharp
+namespace StarWars.Data.EntityFramework.Seed
+{
+    public static class StarWarsSeedData
+    {
+        public static void EnsureSeedData(this StarWarsContext db)
+        {
+            db._logger.LogInformation("Seeding database");
+            if (!db.Droids.Any())
+            {
+                db._logger.LogInformation("Seeding droids");
+                // ...
+            }
+        }
+    }
+}
+```
+
+* Fix controller unit test
+```csharp
+public class GraphQLControllerShould
+{
+    public GraphQLControllerShould()
+    {
+        // ...
+        var logger = new Mock<ILogger<GraphQLController>>();
+        _graphqlController = new GraphQLController(documentExecutor.Object, schema.Object, logger.Object);
+    }
+    // ...
+}
+```
+
+* Fix repository unit test
+```csharp
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Moq;
+using StarWars.Core.Models;
+using StarWars.Data.EntityFramework;
+using StarWars.Data.EntityFramework.Repositories;
+using Xunit;
+
+namespace StarWars.Tests.Unit.Data.EntityFramework.Repositories
+{
+    public class DroidRepositoryShould
+    {
+        public DroidRepositoryShould()
+        {
+            var dbLogger = new Mock<ILogger<StarWarsContext>>();
+            // ...
+            using (var context = new StarWarsContext(options, dbLogger.Object))
+            {
+                // ...
+            }
+            // ...
+            var repoLogger = new Mock<ILogger<DroidRepository>>();
+            _droidRepository = new DroidRepository(starWarsContext, repoLogger.Object);
+        }
+    }
+}
+```
+
+* Enjoy console logs
+![console-logs-1](https://cloud.githubusercontent.com/assets/8171434/23155559/6b17afe8-f813-11e6-88e0-2923270f4ee8.png)
+![console-logs-2](https://cloud.githubusercontent.com/assets/8171434/23155802/68f8e604-f814-11e6-90a7-44d09e851a51.png)

@@ -1,6 +1,7 @@
 ﻿using GraphQL;
 using GraphQL.Types;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Moq;
 using StarWars.Api.Controllers;
 using StarWars.Api.Models;
@@ -19,7 +20,8 @@ namespace StarWars.Tests.Unit.Api.Controllers
             var documentExecutor = new Mock<IDocumentExecuter>();
             documentExecutor.Setup(x => x.ExecuteAsync(It.IsAny<ExecutionOptions>())).Returns(Task.FromResult(new ExecutionResult()));
             var schema = new Mock<ISchema>();
-            _graphqlController = new GraphQLController(documentExecutor.Object, schema.Object);
+            var logger = new Mock<ILogger<GraphQLController>>();
+            _graphqlController = new GraphQLController(documentExecutor.Object, schema.Object, logger.Object);
         }
 
         [Fact]
