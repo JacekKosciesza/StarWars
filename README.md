@@ -22,7 +22,7 @@ but using ASP.NET Core, Entity Framework Core and some best practices, patterns 
     - [x] Visual Studio 2017 RC upgrade
     - [x] Integration Tests
     - [x] Logs
-    - [ ] Code Coverage
+    - [x] Code Coverage
     - [ ] Continous Integration
     
 
@@ -1168,3 +1168,52 @@ namespace StarWars.Tests.Unit.Data.EntityFramework.Repositories
 * Enjoy console logs
 ![console-logs-1](https://cloud.githubusercontent.com/assets/8171434/23155559/6b17afe8-f813-11e6-88e0-2923270f4ee8.png)
 ![console-logs-2](https://cloud.githubusercontent.com/assets/8171434/23155802/68f8e604-f814-11e6-90a7-44d09e851a51.png)
+
+#### Code Coverage
+
+* Install OpenCover NuGet package
+![open-cover-nuget](https://cloud.githubusercontent.com/assets/8171434/23206746/247aa694-f8ef-11e6-9b14-d0ade0453b94.png)
+
+* Add path to OpenCover tools to 'Path' environment variable. In my case it was:
+```
+C:\Users\Jacek_Kosciesza\.nuget\packages\opencover\4.6.519\tools\
+```
+
+* Set 'Full' debug type in all projects (StarWars.Api.csproj, StarWars.Core.csproj, StarWars.Data.csproj). This is needed to produce *.pdb files which are understandable by OpenCover.
+```xml
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <!--...-->
+    <DebugType>Full</DebugType>
+  </PropertyGroup>
+  <!--...-->
+</Project>
+```
+* Run OpenCover in the console
+```
+OpenCover.Console.exe
+    -target:"dotnet.exe"
+    -targetargs:"test -f netcoreapp1.1 -c Release Tests/StarWars.Tests.Unit/StarWars.Tests.Unit.csproj"
+    -hideskipped:File
+    -output:coverage/unit/coverage.xml
+    -oldStyle
+    -filter:"+[StarWars*]* -[StarWars.Tests*]* -[StarWars.Api]*Program -[StarWars.Api]*Startup -[StarWars.Data]*EntityFramework.Workaround.Program -[StarWars.Data]*EntityFramework.Migrations* -[StarWars.Data]*EntityFramework.Seed*"
+    -searchdirs:"Tests/StarWars.Tests.Unit/bin/Release/netcoreapp1.1"
+    -register:user
+```
+![open-cover-unit-tests-results](https://cloud.githubusercontent.com/assets/8171434/23207392/70e8c8b0-f8f1-11e6-8284-2c6a1ead0f0c.png)
+
+* Install 'ReportGenerator' NuGet package
+![report-generator-nuget](https://cloud.githubusercontent.com/assets/8171434/23207452/a84e4e1a-f8f1-11e6-87fb-a28888f59ce8.png)
+
+* Create simple script (unit-tests.bat)
+```
+mkdir coverage\unit
+OpenCover.Console.exe -target:"dotnet.exe" -targetargs:"test -f netcoreapp1.1 -c Release Tests/StarWars.Tests.Unit/StarWars.Tests.Unit.csproj" -hideskipped:File -output:coverage/unit/coverage.xml -oldStyle -filter:"+[StarWars*]* -[StarWars.Tests*]* -[StarWars.Api]*Program -[StarWars.Api]*Startup -[StarWars.Data]*EntityFramework.Workaround.Program -[StarWars.Data]*EntityFramework.Migrations* -[StarWars.Data]*EntityFramework.Seed*" -searchdirs:"Tests/StarWars.Tests.Unit/bin/Release/netcoreapp1.1" -register:user
+ReportGenerator.exe -reports:coverage/unit/coverage.xml -targetdir:coverage/unit -verbosity:Error
+start .\coverage\unit\index.htm
+```
+
+* Enjoy HTML based code coverage report
+![open-cover-html-report-results](https://cloud.githubusercontent.com/assets/8171434/23207608/2d314e7a-f8f2-11e6-81bc-1a91d1254c78.png)
+ 

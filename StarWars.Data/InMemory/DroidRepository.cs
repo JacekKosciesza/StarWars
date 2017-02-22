@@ -11,6 +11,8 @@ namespace StarWars.Data.InMemory
     {
         private readonly ILogger _logger;
 
+        public DroidRepository() { }
+
         public DroidRepository(ILogger<DroidRepository> logger)
         {
             _logger = logger;

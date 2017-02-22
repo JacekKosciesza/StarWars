@@ -11,6 +11,8 @@ namespace StarWars.Data.EntityFramework.Repositories
         private StarWarsContext _db { get; set; }
         private readonly ILogger _logger;
 
+        public DroidRepository() { }
+
         public DroidRepository(StarWarsContext db, ILogger<DroidRepository> logger)
         {
             _db = db;
