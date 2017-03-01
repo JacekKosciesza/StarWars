@@ -24,7 +24,8 @@ but using ASP.NET Core, Entity Framework Core and some best practices, patterns 
     - [x] Logs
     - [x] Code Coverage
     - [ ] Continous Integration
-    
+- [ ] Advanced
+    - [ ] Full 'Star Wars' database (Episodes, Characters, Planets, Humans etc.)  
 
 ## Tutorials
 
@@ -1217,3 +1218,8 @@ start .\coverage\unit\index.htm
 * Enjoy HTML based code coverage report
 ![open-cover-html-report-results](https://cloud.githubusercontent.com/assets/8171434/23207608/2d314e7a-f8f2-11e6-81bc-1a91d1254c78.png)
  
+ #### Continous Integration
+
+ * Configure CI using VSTS (Visual Studio Team Services).<br>
+   TODO: At the moment hosted agents don't support *.csproj based .NET Core projects, so we have to wait for a while, see this issue:
+   [Support for .NET Core .csproj files? #3311](https://github.com/Microsoft/vsts-tasks/issues/3311)
