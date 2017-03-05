@@ -1,8 +1,7 @@
 ﻿namespace StarWars.Core.Models
 {
-    public class Droid
+    public class Droid : Character
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
+        public string PrimaryFunction { get; set; }
     }
 }

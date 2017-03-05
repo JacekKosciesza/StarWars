@@ -25,12 +25,14 @@ but using ASP.NET Core, Entity Framework Core and some best practices, patterns 
     - [x] Code Coverage
     - [ ] Continous Integration
 - [ ] Advanced
-    - [ ] Full 'Star Wars' database (Episodes, Characters, Planets, Humans etc.)  
+    - [x] Full 'Star Wars' database (Episodes, Characters, Planets, Humans etc.)
+    - [ ] Repositories
+    - [ ] GraphQL queries
+    - [ ] GraphQL mutations
 
 ## Tutorials
 
 ### Basic
-
 
 * Create 'StarWars' empty solution
 ![empty-solution](https://cloud.githubusercontent.com/assets/8171434/22863729/0831261c-f146-11e6-9fef-040e20462bfe.png)
@@ -1223,3 +1225,448 @@ start .\coverage\unit\index.htm
  * Configure CI using VSTS (Visual Studio Team Services).<br>
    TODO: At the moment hosted agents don't support *.csproj based .NET Core projects, so we have to wait for a while, see this issue:
    [Support for .NET Core .csproj files? #3311](https://github.com/Microsoft/vsts-tasks/issues/3311)
+
+### Advanced
+
+#### Full 'Star Wars' database (see [Facebook GraphQL](https://github.com/facebook/graphql) and [GraphQL.js](https://github.com/graphql/graphql-js))
+
+* Create models
+```csharp
+namespace StarWars.Core.Models
+{
+    public class Episode
+    {
+        public int  Id  { get; set; }
+        public string Title { get; set; }
+        public virtual ICollection<CharacterEpisode> CharacterEpisodes { get; set; }
+    }
+}
+```
+```csharp
+namespace StarWars.Core.Models
+{
+    public class Planet
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public ICollection<Human> Humans { get; set; }
+    }
+}
+```
+```csharp
+namespace StarWars.Core.Models
+{
+    public class Character
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public virtual ICollection<CharacterEpisode> CharacterEpisodes { get; set; }
+        public virtual ICollection<CharacterFriend> CharacterFriends { get; set; }
+        public virtual ICollection<CharacterFriend> FriendCharacters { get; set; }
+    }
+}
+```
+```csharp
+namespace StarWars.Core.Models
+{
+    public class CharacterEpisode
+    {
+        public int CharacterId { get; set; }
+        public Character Character { get; set; }
+
+        public int EpisodeId { get; set; }
+        public Episode Episode { get; set; }
+    }
+}
+```
+```csharp
+namespace StarWars.Core.Models
+{
+    public class CharacterFriend
+    {
+        public int CharacterId { get; set; }
+        public Character Character { get; set; }
+
+        public int FriendId { get; set; }
+        public Character Friend { get; set; }
+    }
+}
+```
+```csharp
+namespace StarWars.Core.Models
+{
+    public class Droid : Character
+    {
+        public string PrimaryFunction { get; set; }
+    }
+}
+```
+```csharp
+namespace StarWars.Core.Models
+{
+    public class Human : Character
+    {
+        public Planet HomePlanet { get; set; }
+    }
+}
+```
+
+* Update StarWarsContext
+```csharp
+namespace StarWars.Data.EntityFramework
+{
+    public class StarWarsContext : DbContext
+    {
+        // ...
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            // https://docs.microsoft.com/en-us/ef/core/modeling/relationships
+            // http://stackoverflow.com/questions/38520695/multiple-relationships-to-the-same-table-in-ef7core
+
+            // episodes
+            modelBuilder.Entity<Episode>().HasKey(c => c.Id);
+            modelBuilder.Entity<Episode>().Property(e => e.Id).ValueGeneratedNever();
+
+            // planets
+            modelBuilder.Entity<Planet>().HasKey(c => c.Id);
+            modelBuilder.Entity<Planet>().Property(e => e.Id).ValueGeneratedNever();
+
+            // characters
+            modelBuilder.Entity<Character>().HasKey(c => c.Id);
+            modelBuilder.Entity<Character>().Property(e => e.Id).ValueGeneratedNever();
+
+            // characters-friends
+            modelBuilder.Entity<CharacterFriend>().HasKey(t => new { t.CharacterId, t.FriendId});
+
+            modelBuilder.Entity<CharacterFriend>()
+                .HasOne(cf => cf.Character)
+                .WithMany(c => c.CharacterFriends)
+                .HasForeignKey(cf => cf.CharacterId)                
+                .OnDelete(DeleteBehavior.Restrict);               
+
+            modelBuilder.Entity<CharacterFriend>()
+                .HasOne(cf => cf.Friend)
+                .WithMany(t => t.FriendCharacters)
+                .HasForeignKey(cf => cf.FriendId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // characters-episodes
+            modelBuilder.Entity<CharacterEpisode>().HasKey(t => new { t.CharacterId, t.EpisodeId });
+
+            modelBuilder.Entity<CharacterEpisode>()
+                .HasOne(cf => cf.Character)
+                .WithMany(c => c.CharacterEpisodes)
+                .HasForeignKey(cf => cf.CharacterId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<CharacterEpisode>()
+                .HasOne(cf => cf.Episode)
+                .WithMany(t => t.CharacterEpisodes)
+                .HasForeignKey(cf => cf.EpisodeId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // humans
+            modelBuilder.Entity<Human>().HasOne(h => h.HomePlanet).WithMany(p => p.Humans);
+        }
+
+        public virtual DbSet<Episode> Episodes { get; set; }
+        public virtual DbSet<Planet> Planets { get; set; }
+        public virtual DbSet<Character> Characters { get; set; }
+        public virtual DbSet<CharacterFriend> CharacterFriends { get; set; }
+        public virtual DbSet<CharacterEpisode> CharacterEpisodes { get; set; }
+        public virtual DbSet<Droid> Droids { get; set; }
+        public virtual DbSet<Human> Humans { get; set; }
+    }
+}
+```
+
+* Update database seed data
+```csharp
+namespace StarWars.Data.EntityFramework.Seed
+{
+    public static class StarWarsSeedData
+    {
+        public static void EnsureSeedData(this StarWarsContext db)
+        {
+            db._logger.LogInformation("Seeding database");
+
+            // episodes
+            var newhope = new Episode { Id = 4, Title = "NEWHOPE" };
+            var empire = new Episode { Id = 5, Title = "EMPIRE" };
+            var jedi = new Episode { Id = 6, Title = "JEDI" };
+            var episodes = new List<Episode>
+            {
+                newhope,
+                empire,
+                jedi,
+            };
+            if (!db.Episodes.Any())
+            {
+                db._logger.LogInformation("Seeding episodes");
+                db.Episodes.AddRange(episodes);
+                db.SaveChanges();
+            }
+
+            // planets
+            var tatooine = new Planet { Id = 1, Name = "Tatooine" };
+            var alderaan = new Planet { Id = 2, Name = "Alderaan" };
+            var planets = new List<Planet>
+            {
+                tatooine,
+                alderaan
+            };
+            if (!db.Planets.Any())
+            {
+                db._logger.LogInformation("Seeding planets");
+                db.Planets.AddRange(planets);
+                db.SaveChanges();
+            }
+
+            // humans
+            var luke = new Human
+            {
+                Id = 1000,
+                Name = "Luke Skywalker",
+                CharacterEpisodes = new List<CharacterEpisode>
+                {
+                    new CharacterEpisode { Episode = newhope },
+                    new CharacterEpisode { Episode = empire },
+                    new CharacterEpisode { Episode = jedi }
+                },
+                HomePlanet = tatooine
+            };
+            var vader = new Human
+            {
+                Id = 1001,
+                Name = "Darth Vader",
+                CharacterEpisodes = new List<CharacterEpisode>
+                {
+                    new CharacterEpisode { Episode = newhope },
+                    new CharacterEpisode { Episode = empire },
+                    new CharacterEpisode { Episode = jedi }
+                },
+                HomePlanet = tatooine
+            };
+            var han = new Human
+            {
+                Id = 1002,
+                Name = "Han Solo",
+                CharacterEpisodes = new List<CharacterEpisode>
+                {
+                    new CharacterEpisode { Episode = newhope },
+                    new CharacterEpisode { Episode = empire },
+                    new CharacterEpisode { Episode = jedi }
+                },
+                HomePlanet = tatooine
+            };
+            var leia = new Human
+            {
+                Id = 1003,
+                Name = "Leia Organa",
+                CharacterEpisodes = new List<CharacterEpisode>
+                {
+                    new CharacterEpisode { Episode = newhope },
+                    new CharacterEpisode { Episode = empire },
+                    new CharacterEpisode { Episode = jedi }
+                },
+                HomePlanet = alderaan
+            };
+            var tarkin = new Human
+            {
+                Id = 1004,
+                Name = "Wilhuff Tarkin",
+                CharacterEpisodes = new List<CharacterEpisode>
+                {
+                    new CharacterEpisode { Episode = newhope }                    
+                },
+            };
+            var humans = new List<Human>
+            {
+                luke,
+                vader,
+                han,
+                leia,
+                tarkin
+            };
+            if (!db.Humans.Any())
+            {
+                db._logger.LogInformation("Seeding humans");                
+                db.Humans.AddRange(humans);
+                db.SaveChanges();
+            }
+
+            // droids
+            var threepio = new Droid
+            {
+                Id = 2000,
+                Name = "C-3PO",
+                CharacterEpisodes = new List<CharacterEpisode>
+                {
+                    new CharacterEpisode { Episode = newhope },
+                    new CharacterEpisode { Episode = empire },
+                    new CharacterEpisode { Episode = jedi }
+                },
+                PrimaryFunction = "Protocol"
+            };
+            var artoo = new Droid
+            {
+                Id = 2001,
+                Name = "R2-D2",
+                CharacterEpisodes = new List<CharacterEpisode>
+                {
+                    new CharacterEpisode { Episode = newhope },
+                    new CharacterEpisode { Episode = empire },
+                    new CharacterEpisode { Episode = jedi }
+                },
+                PrimaryFunction = "Astromech"
+            };
+            var droids = new List<Droid>
+            {
+                threepio,
+                artoo
+            };
+            if (!db.Droids.Any())
+            {
+                db._logger.LogInformation("Seeding droids");
+                db.Droids.AddRange(droids);
+                db.SaveChanges();
+            }
+
+            // update character's friends
+            luke.CharacterFriends = new List<CharacterFriend>
+            {
+                new CharacterFriend { Friend = han },
+                new CharacterFriend { Friend = leia },
+                new CharacterFriend { Friend = threepio },
+                new CharacterFriend { Friend = artoo }
+            };
+            vader.CharacterFriends = new List<CharacterFriend>
+            {
+                new CharacterFriend { Friend = tarkin }
+            };
+            han.CharacterFriends = new List<CharacterFriend>
+            {
+                new CharacterFriend { Friend = luke },
+                new CharacterFriend { Friend = leia },
+                new CharacterFriend { Friend = artoo }
+            };
+            leia.CharacterFriends = new List<CharacterFriend>
+            {
+                new CharacterFriend { Friend = luke },
+                new CharacterFriend { Friend = han },
+                new CharacterFriend { Friend = threepio },
+                new CharacterFriend { Friend = artoo }
+            };
+            tarkin.CharacterFriends = new List<CharacterFriend>
+            {
+                new CharacterFriend { Friend = vader }
+            };
+            threepio.CharacterFriends = new List<CharacterFriend>
+            {
+                new CharacterFriend { Friend = luke },
+                new CharacterFriend { Friend = han },
+                new CharacterFriend { Friend = leia },
+                new CharacterFriend { Friend = artoo }
+            };
+            artoo.CharacterFriends = new List<CharacterFriend>
+            {
+                new CharacterFriend { Friend = luke },
+                new CharacterFriend { Friend = han },
+                new CharacterFriend { Friend = leia }
+            };
+            var characters = new List<Character>
+            {
+                luke,
+                vader,
+                han,
+                leia,
+                tarkin,
+                threepio,
+                artoo
+            };
+            if (!db.CharacterFriends.Any())
+            {
+                db._logger.LogInformation("Seeding character's friends");
+                db.Characters.UpdateRange(characters);
+                db.SaveChanges();
+            }
+        }
+    }
+}
+```
+
+* Add 'Microsoft.EntityFrameworkCore.Tools' NuGet
+![ef-tools-nuget](https://cloud.githubusercontent.com/assets/8171434/23588252/035b1fd2-01bb-11e7-888a-11622b3b364f.png)
+
+* Set 'StarWars.Data' as a StartUp project
+
+* Add 'Full' migrations
+![ef-full-migration](https://cloud.githubusercontent.com/assets/8171434/23591647/f7e21834-01f3-11e7-9460-69baaa48e338.png)
+
+* Update database
+![ef-update-database-full](https://cloud.githubusercontent.com/assets/8171434/23591671/898a4a2c-01f4-11e7-827b-de09b09af1e1.png)
+![ef-update-database-full-ssms](https://cloud.githubusercontent.com/assets/8171434/23591707/0cb4c4ae-01f5-11e7-89de-958880b60b9b.png)
+
+* Set 'StarWars.Api' as a StartUp project
+
+* Run 'StarWars.Api' to seed database
+![ef-seed-full-database](https://cloud.githubusercontent.com/assets/8171434/23591737/7e581b10-01f5-11e7-9d78-e7b92cf7ba10.png)
+![seeded-full-database-smss](https://cloud.githubusercontent.com/assets/8171434/23591764/e902dfa4-01f5-11e7-8dbc-752da3305d45.png)
+
+* Create integration test checking EF configuration and seeded data
+```csharp
+namespace StarWars.Tests.Integration.Data.EntityFramework
+{
+    public class StarWarsContextShould
+    {
+        [Fact]
+        public async void ReturnR2D2Droid()
+        {
+            // Given
+            using (var db = new StarWarsContext())
+            {
+                // When
+                var r2d2 = await db.Droids
+                    .Include("CharacterEpisodes.Episode")
+                    .Include("CharacterFriends.Friend")
+                    .FirstOrDefaultAsync(d => d.Id == 2001);
+
+                // Then
+                Assert.NotNull(r2d2);
+                Assert.Equal("R2-D2", r2d2.Name);
+                Assert.Equal("Astromech", r2d2.PrimaryFunction);
+                var episodes = r2d2.CharacterEpisodes.Select(e => e.Episode.Title);
+                Assert.Equal(new string[] { "NEWHOPE", "EMPIRE", "JEDI" }, episodes);
+                var friends = r2d2.CharacterFriends.Select(e => e.Friend.Name);
+                Assert.Equal(new string[] { "Luke Skywalker", "Han Solo", "Leia Organa" }, friends);
+            }
+        }
+    }
+}
+```
+
+* Make sure all tests pass
+![all-tests-pass-full-database](https://cloud.githubusercontent.com/assets/8171434/23591793/60ab3506-01f6-11e7-88b5-f096b2fc9777.png)
+
+* Update StarWarsQuery with new hero ("R2-D2") ID (2001)
+```csharp
+namespace StarWars.Api.Models
+{
+    public class StarWarsQuery : ObjectGraphType
+    {
+        // ...
+        public StarWarsQuery(IDroidRepository _droidRepository)
+        {
+            Field<DroidType>(
+              "hero",
+              resolve: context => _droidRepository.Get(2001)
+            );
+        }
+    }
+}
+``` 
+
+* Make sure application still works
+![graphiql-full-database](https://cloud.githubusercontent.com/assets/8171434/23591775/23ec4f60-01f6-11e7-92ef-f98ea24c1293.png)
+
+

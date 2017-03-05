@@ -13,7 +13,7 @@ namespace StarWars.Api.Models
         {
             Field<DroidType>(
               "hero",
-              resolve: context => _droidRepository.Get(1)
+              resolve: context => _droidRepository.Get(2001)
             );
         }
     }
