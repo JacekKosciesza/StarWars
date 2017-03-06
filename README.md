@@ -4,6 +4,8 @@
 * Basic - simple 'Hello GraphQL!' example based on console version from [GraphQL for .NET on GitHub](https://github.com/graphql-dotnet/graphql-dotnet),
 but using ASP.NET Core, Entity Framework Core and some best practices, patterns and principles.
 
+* Advanced - GraphQL queries and mutations with full 'Star Wars' database (see [GraphQL Specification by Facebook](https://github.com/facebook/graphql) and [GraphQL.js - reference implementation](https://github.com/graphql/graphql-js))
+
 ## Roadmap
 - [x] Basic
     - [x] Simple tutorial (step/screenshot/code)
