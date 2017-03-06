@@ -28,6 +28,7 @@ but using ASP.NET Core, Entity Framework Core and some best practices, patterns 
     - [ ] Continous Integration
 - [ ] Advanced
     - [x] Full 'Star Wars' database (Episodes, Characters, Planets, Humans etc.)
+    - [x] Base/generic repository
     - [ ] Repositories
     - [ ] GraphQL queries
     - [ ] GraphQL mutations
@@ -1671,4 +1672,177 @@ namespace StarWars.Api.Models
 * Make sure application still works
 ![graphiql-full-database](https://cloud.githubusercontent.com/assets/8171434/23591775/23ec4f60-01f6-11e7-92ef-f98ea24c1293.png)
 
+#### Base/generic repository
 
+* Create generic entity interface
+```csharp
+namespace StarWars.Core.Data
+{
+    public interface IEntity<TKey>
+    {
+        TKey Id { get; set; }
+    }
+}
+```
+
+* Update models to inherit from IEntity interface (integer based id)
+```csharp
+namespace StarWars.Core.Models
+{
+    public class Character : IEntity<int>
+    {
+        // ...
+    }
+}
+```
+```csharp
+namespace StarWars.Core.Models
+{
+    public class Episode : IEntity<int>
+    {
+        // ...
+    }
+}
+```
+```csharp
+namespace StarWars.Core.Models
+{
+    public class Planet : IEntity<int>
+    {
+        // ...
+    }
+}
+```
+
+* Create base/generic repository interface
+```csharp
+namespace StarWars.Core.Data
+{
+    public interface IBaseRepository<TEntity, in TKey>
+        where TEntity : class
+    {
+        Task<List<TEntity>> GetAll();
+        Task<TEntity> Get(TKey id);
+        TEntity Add(TEntity entity);
+        void AddRange(IEnumerable<TEntity> entities);
+        void Delete(TKey id);
+        void Update(TEntity entity);
+        Task<bool> SaveChangesAsync();
+    }
+}
+```
+* Create Entity Framework base/generic repository
+```csharp
+namespace StarWars.Data.EntityFramework.Repositories
+{
+    public abstract class BaseRepository<TEntity, TKey> : IBaseRepository<TEntity, TKey>
+        where TEntity : class, IEntity<TKey>, new()
+    {
+        protected DbContext _db;
+        protected readonly ILogger _logger;
+
+        protected BaseRepository() { }
+
+        protected BaseRepository(DbContext db, ILogger logger)
+        {
+            _db = db;
+            _logger = logger;
+        }
+
+        public virtual Task<List<TEntity>> GetAll()
+        {
+            return _db.Set<TEntity>().ToListAsync();
+        }
+
+        public virtual Task<TEntity> Get(TKey id)
+        {
+            _logger.LogInformation("Get {type} with id = {id}", typeof(TEntity).Name, id);
+            return _db.Set<TEntity>().SingleOrDefaultAsync(c => c.Id.Equals(id));
+        }
+
+        public virtual TEntity Add(TEntity entity)
+        {
+            _db.Set<TEntity>().Add(entity);
+            return entity;
+        }
+
+        public void AddRange(IEnumerable<TEntity> entities)
+        {
+            _db.Set<TEntity>().AddRange(entities);
+        }
+
+        public virtual void Delete(TKey id)
+        {
+            var entity = new TEntity { Id = id };
+            _db.Set<TEntity>().Attach(entity);
+            _db.Set<TEntity>().Remove(entity);
+        }
+
+        public virtual async Task<bool> SaveChangesAsync()
+        {
+            return (await _db.SaveChangesAsync()) > 0;
+        }
+
+        public virtual void Update(TEntity entity)
+        {
+            _db.Set<TEntity>().Attach(entity);
+            _db.Entry(entity).State = EntityState.Modified;
+        }
+    }
+}
+```
+
+* Refactor EF Droid repository
+```csharp
+namespace StarWars.Core.Data
+{
+    public interface IDroidRepository : IBaseRepository<Droid, int> { }
+}
+```
+```csharp
+namespace StarWars.Data.EntityFramework.Repositories
+{
+    public class DroidRepository : BaseRepository<Droid, int>, IDroidRepository
+    {
+        public DroidRepository() { }
+
+        public DroidRepository(StarWarsContext db, ILogger<DroidRepository> logger)
+            : base(db, logger)
+        {
+        }
+    }
+}
+```
+* Refactor in-memeory Droid repository
+```csharp
+namespace StarWars.Data.InMemory
+{
+    public class DroidRepository : IDroidRepository
+    {
+        private readonly ILogger _logger;
+
+        public DroidRepository() { }
+
+        public DroidRepository(ILogger<DroidRepository> logger)
+        {
+            _logger = logger;
+        }
+
+        private List<Droid> _droids = new List<Droid> {
+            new Droid { Id = 1, Name = "R2-D2" }
+        };
+
+        public Task<Droid> Get(int id)
+        {
+            _logger.LogInformation("Get droid with id = {id}", id);
+            return Task.FromResult(_droids.FirstOrDefault(droid => droid.Id == id));
+        }
+
+        // ...
+        // rest of the methods are not implemented
+        // for now they are just throwing  NotImplementedException       
+    }
+}
+```
+
+* Make sure tests and api stil works
