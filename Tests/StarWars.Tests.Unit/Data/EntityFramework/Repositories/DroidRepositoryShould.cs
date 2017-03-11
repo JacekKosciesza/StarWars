@@ -20,7 +20,7 @@ namespace StarWars.Tests.Unit.Data.EntityFramework.Repositories
             _dbLogger = new Mock<ILogger<StarWarsContext>>();
             // https://docs.microsoft.com/en-us/ef/core/miscellaneous/testing/in-memory
             _options = new DbContextOptionsBuilder<StarWarsContext>()
-                .UseInMemoryDatabase(databaseName: "StarWars")
+                .UseInMemoryDatabase(databaseName: "StarWars_DroidRepositoryShould")
                 .Options;
             using (var context = new StarWarsContext(_options, _dbLogger.Object))
             {
