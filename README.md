@@ -32,6 +32,14 @@ but using ASP.NET Core, Entity Framework Core and some best practices, patterns 
     - [ ] Repositories
     - [ ] GraphQL queries
     - [ ] GraphQL mutations
+    - [ ] Docker
+- [ ] PWA (Progressive Web App)
+    - [ ] Identity microservice
+    - [ ] Angular frontend
+    - [ ] Apollo GraphQL Client for Angular
+    - [ ] Service Worker
+    - [ ] IndexedDB
+    - ...
 
 ## Tutorials
 
