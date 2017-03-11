@@ -9,112 +9,112 @@ using Xunit;
 
 namespace StarWars.Tests.Unit.Data.EntityFramework.Repositories
 {
-    public class EpisodeRepositoryShould
+    public class PlanetRepositoryShould
     {
-        private readonly EpisodeRepository _episodeRepository;
+        private readonly PlanetRepository _planetRepository;
         private DbContextOptions<StarWarsContext> _options;
         private Mock<ILogger<StarWarsContext>> _dbLogger;
-        public EpisodeRepositoryShould()
+        public PlanetRepositoryShould()
         {
             // Given
             _dbLogger = new Mock<ILogger<StarWarsContext>>();
             // https://docs.microsoft.com/en-us/ef/core/miscellaneous/testing/in-memory
             _options = new DbContextOptionsBuilder<StarWarsContext>()
-                .UseInMemoryDatabase(databaseName: "StarWars_EpisodeRepositoryShould")
+                .UseInMemoryDatabase(databaseName: "StarWars_PlanetRepositoryShould")
                 .Options;
             using (var context = new StarWarsContext(_options, _dbLogger.Object))
             {
                 context.EnsureSeedData();
             }
             var starWarsContext = new StarWarsContext(_options, _dbLogger.Object);
-            var repoLogger = new Mock<ILogger<EpisodeRepository>>();
-            _episodeRepository = new EpisodeRepository(starWarsContext, repoLogger.Object);
+            var repoLogger = new Mock<ILogger<PlanetRepository>>();
+            _planetRepository = new PlanetRepository(starWarsContext, repoLogger.Object);
         }
 
         [Fact]
-        public async void ReturnJediEpisodeGivenIdOf6()
+        public async void ReturnTatooinePlanetGivenIdOf1()
         {
             // When
-            var jedi = await _episodeRepository.Get(6);
+            var tatooine = await _planetRepository.Get(1);
 
             // Then
-            Assert.NotNull(jedi);
-            Assert.Equal("JEDI", jedi.Title);
+            Assert.NotNull(tatooine);
+            Assert.Equal("Tatooine", tatooine.Name);
         }
 
         [Fact]
-        public async void AddNewEpisode()
+        public async void AddNewPlanet()
         {
             // Given
-            var episode101 = new Episode { Id = 101, Title = "Episode101" };
+            var planet101 = new Planet { Id = 101, Name = "Planet101" };
 
             // When
-            _episodeRepository.Add(episode101);
-            var saved = await _episodeRepository.SaveChangesAsync();
+            _planetRepository.Add(planet101);
+            var saved = await _planetRepository.SaveChangesAsync();
 
             // Then
             Assert.True(saved);
             using (var db = new StarWarsContext(_options, _dbLogger.Object))
             {
-                var episode = await db.Episodes.FindAsync(101);
-                Assert.NotNull(episode);
-                Assert.Equal(101, episode.Id);
-                Assert.Equal("Episode101", episode.Title);
+                var planet = await db.Planets.FindAsync(101);
+                Assert.NotNull(planet);
+                Assert.Equal(101, planet.Id);
+                Assert.Equal("Planet101", planet.Name);
 
                 // Cleanup
-                db.Episodes.Remove(episode);
+                db.Planets.Remove(planet);
                 await db.SaveChangesAsync();
             }
         }
 
         [Fact]
-        public async void UpdateExistingEpisode()
+        public async void UpdateExistingPlanet()
         {
             // Given
-            var newhope = await _episodeRepository.Get(4);
-            newhope.Title = "Episode4";
+            var alderaan = await _planetRepository.Get(2);
+            alderaan.Name = "Planet2";
 
             // When
-            _episodeRepository.Update(newhope);
-            var saved = await _episodeRepository.SaveChangesAsync();
+            _planetRepository.Update(alderaan);
+            var saved = await _planetRepository.SaveChangesAsync();
 
             // Then
             Assert.True(saved);
             using (var db = new StarWarsContext(_options, _dbLogger.Object))
             {
-                var episode = await db.Episodes.FindAsync(4);
-                Assert.NotNull(episode);
-                Assert.Equal(4, episode.Id);
-                Assert.Equal("Episode4", episode.Title);
+                var planet = await db.Planets.FindAsync(2);
+                Assert.NotNull(planet);
+                Assert.Equal(2, planet.Id);
+                Assert.Equal("Planet2", planet.Name);
 
                 // Cleanup
-                episode.Title = "NEWHOPE";
-                db.Episodes.Update(episode);
+                planet.Name = "Alderaan";
+                db.Planets.Update(planet);
                 await db.SaveChangesAsync();
             }
         }
 
         [Fact]
-        public async void DeleteExistingEpisode()
+        public async void DeleteExistingPlanet()
         {
             // Given
             using (var db = new StarWarsContext(_options, _dbLogger.Object))
             {
-                var episode102 = new Episode { Id = 102, Title = "Episode102" };
-                await db.Episodes.AddAsync(episode102);
+                var planet102 = new Planet { Id = 102, Name = "Planet102" };
+                await db.Planets.AddAsync(planet102);
                 await db.SaveChangesAsync();
             }
 
             // When
-            _episodeRepository.Delete(102);
-            var saved = await _episodeRepository.SaveChangesAsync();
+            _planetRepository.Delete(102);
+            var saved = await _planetRepository.SaveChangesAsync();
 
             // Then
             Assert.True(saved);
             using (var db = new StarWarsContext(_options, _dbLogger.Object))
             {
-                var deletedEpisode = await db.Episodes.FindAsync(102);
-                Assert.Null(deletedEpisode);
+                var deletedPlanet = await db.Planets.FindAsync(102);
+                Assert.Null(deletedPlanet);
             }
         }
     }
