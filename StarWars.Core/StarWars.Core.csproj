@@ -12,4 +12,8 @@
     <DebugType>Full</DebugType>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Update="Microsoft.NETCore.App" Version="1.1.1" />
+  </ItemGroup>
+
 </Project>

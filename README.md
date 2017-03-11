@@ -29,6 +29,7 @@ but using ASP.NET Core, Entity Framework Core and some best practices, patterns 
 - [ ] Advanced
     - [x] Full 'Star Wars' database (Episodes, Characters, Planets, Humans etc.)
     - [x] Base/generic repository
+    - [x] Visual Studio 2017 RTM upgrade
     - [ ] Repositories
     - [ ] GraphQL queries
     - [ ] GraphQL mutations
@@ -1854,3 +1855,36 @@ namespace StarWars.Data.InMemory
 ```
 
 * Make sure tests and api stil works
+
+####  Visual Studio 2017 RTM upgrade
+
+* Update all NuGet packages for the solution (especially .NET Core v1.1.1)
+![vs-2017-rtm-nugets-update](https://cloud.githubusercontent.com/assets/8171434/23823157/c6a30c34-065c-11e7-8d69-81e43fbdd8a1.png)
+
+* Use 'Package Manger Console' to fix problems with upgrading 'Microsoft.NETCore.App' from v1.1.0 to v.1.1.1 (for some reason Consolidate option does not work). Do upgrade for all projects.
+![consolidate-netcore-app](https://cloud.githubusercontent.com/assets/8171434/23823175/31e33df2-065d-11e7-8645-f4f040a36723.png)
+```
+Install-Package Microsoft.NETCore.App
+```
+![package-manager-console-netcore-app-upgrade](https://cloud.githubusercontent.com/assets/8171434/23823182/4b07003e-065d-11e7-9f69-7803bd62a236.png)
+
+* Fix 'DroidType' unit test (capitalization of field names)
+```csharp
+namespace StarWars.Tests.Unit.Api.Models
+{
+    public class DroidTypeShould
+    {
+        [Fact]
+        public void HaveIdAndNameFields()
+        {
+            // When
+            var droidType = new DroidType();
+
+            // Then
+            Assert.NotNull(droidType);
+            Assert.True(droidType.HasField("Id"));
+            Assert.True(droidType.HasField("Name"));
+        }
+    }
+}
+```

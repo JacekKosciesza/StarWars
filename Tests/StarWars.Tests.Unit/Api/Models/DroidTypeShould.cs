@@ -13,8 +13,8 @@ namespace StarWars.Tests.Unit.Api.Models
 
             // Then
             Assert.NotNull(droidType);
-            Assert.True(droidType.HasField("id"));
-            Assert.True(droidType.HasField("name"));
+            Assert.True(droidType.HasField("Id"));
+            Assert.True(droidType.HasField("Name"));
         }
     }
 }
