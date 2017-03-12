@@ -2055,3 +2055,8 @@ namespace StarWars.Tests.Unit.Data.EntityFramework.Repositories
     }
 }
 ```
+
+* Check test results
+
+![test-explorer-repositories-crud-tests](https://cloud.githubusercontent.com/assets/8171434/23831006/02b658dc-0718-11e7-8951-3bce49501aca.png)
+![code-coverage-repositories-crud-tests](https://cloud.githubusercontent.com/assets/8171434/23831024/af110302-0718-11e7-8c07-e079a11119b6.png)
