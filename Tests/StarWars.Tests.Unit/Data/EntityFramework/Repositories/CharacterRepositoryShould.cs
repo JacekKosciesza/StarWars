@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moq;
 using StarWars.Core.Models;
@@ -43,14 +44,46 @@ namespace StarWars.Tests.Unit.Data.EntityFramework.Repositories
         }
 
         [Fact]
+        public async void ReturnR2D2FriendsAndEpisodes()
+        {
+            // When
+            var character = await _characterRepository.Get(2001, includes: new[] { "CharacterEpisodes.Episode", "CharacterFriends.Friend" });
+
+            // Then
+            Assert.NotNull(character);
+            Assert.NotNull(character.CharacterEpisodes);
+            var episodes = character.CharacterEpisodes.Select(e => e.Episode.Title);
+            Assert.Equal(new[] { "NEWHOPE", "EMPIRE", "JEDI" }, episodes);
+            Assert.NotNull(character.CharacterFriends);
+            var friends = character.CharacterFriends.Select(e => e.Friend.Name);
+            Assert.Equal(new[] { "Luke Skywalker", "Han Solo", "Leia Organa" }, friends);
+        }
+
+        [Fact]
         public async void ReturnLukeGivenIdOf1000()
         {
             // When
-            var luke = await _characterRepository.Get(1000);
+            var character = await _characterRepository.Get(1000);
 
             // Then
-            Assert.NotNull(luke);
-            Assert.Equal("Luke Skywalker", luke.Name);
+            Assert.NotNull(character);
+            Assert.Equal("Luke Skywalker", character.Name);
+        }
+
+        [Fact]
+        public async void ReturnLukeFriendsAndEpisodes()
+        {
+            // When
+            var character = await _characterRepository.Get(1000, includes: new[] { "CharacterEpisodes.Episode", "CharacterFriends.Friend" });
+
+            // Then
+            Assert.NotNull(character);
+            Assert.NotNull(character.CharacterEpisodes);
+            var episodes = character.CharacterEpisodes.Select(e => e.Episode.Title);
+            Assert.Equal(new[] { "NEWHOPE", "EMPIRE", "JEDI" }, episodes);
+            Assert.NotNull(character.CharacterFriends);
+            var friends = character.CharacterFriends.Select(e => e.Friend.Name);
+            Assert.Equal(new[] { "Han Solo", "Leia Organa", "C-3PO", "R2-D2" }, friends);
         }
 
         [Fact]

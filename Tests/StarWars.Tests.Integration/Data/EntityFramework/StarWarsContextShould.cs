@@ -24,9 +24,9 @@ namespace StarWars.Tests.Integration.Data.EntityFramework
                 Assert.Equal("R2-D2", r2d2.Name);
                 Assert.Equal("Astromech", r2d2.PrimaryFunction);
                 var episodes = r2d2.CharacterEpisodes.Select(e => e.Episode.Title);
-                Assert.Equal(new string[] { "NEWHOPE", "EMPIRE", "JEDI" }, episodes);
+                Assert.Equal(new[] { "NEWHOPE", "EMPIRE", "JEDI" }, episodes);
                 var friends = r2d2.CharacterFriends.Select(e => e.Friend.Name);
-                Assert.Equal(new string[] { "Luke Skywalker", "Han Solo", "Leia Organa" }, friends);
+                Assert.Equal(new[] { "Luke Skywalker", "Han Solo", "Leia Organa" }, friends);
             }
         }
     }

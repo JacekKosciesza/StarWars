@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using StarWars.Core.Data;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace StarWars.Data.EntityFramework.Repositories
@@ -22,13 +23,42 @@ namespace StarWars.Data.EntityFramework.Repositories
 
         public virtual Task<List<TEntity>> GetAll()
         {
+            _logger.LogInformation("Get all {type}s", typeof(TEntity).Name);
             return _db.Set<TEntity>().ToListAsync();
+        }
+
+        public Task<List<TEntity>> GetAll(string include)
+        {
+            _logger.LogInformation("Get all {type}s (including {include})", typeof(TEntity).Name, include);
+            return _db.Set<TEntity>().Include(include).ToListAsync();
+        }
+
+        public Task<List<TEntity>> GetAll(IEnumerable<string> includes)
+        {
+            _logger.LogInformation("Get all {type}s (including [{includes}])", typeof(TEntity).Name, string.Join(",", includes));
+            var query = _db.Set<TEntity>().AsQueryable();
+            query = includes.Aggregate(query, (current, include) => current.Include(include));
+            return query.ToListAsync();
         }
 
         public virtual Task<TEntity> Get(TKey id)
         {
             _logger.LogInformation("Get {type} with id = {id}", typeof(TEntity).Name, id);
             return _db.Set<TEntity>().SingleOrDefaultAsync(c => c.Id.Equals(id));
+        }
+
+        public Task<TEntity> Get(TKey id, string include)
+        {
+            _logger.LogInformation("Get {type} with id = {id} (including {include})", typeof(TEntity).Name, id, include);
+            return _db.Set<TEntity>().Include(include).SingleOrDefaultAsync(c => c.Id.Equals(id));
+        }
+
+        public Task<TEntity> Get(TKey id, IEnumerable<string> includes)
+        {
+            _logger.LogInformation("Get {type} with id = {id} (including [{include}])", typeof(TEntity).Name, id, string.Join(",", includes));
+            var query = _db.Set<TEntity>().AsQueryable();
+            query = includes.Aggregate(query, (current, include) => current.Include(include));
+            return query.SingleOrDefaultAsync(c => c.Id.Equals(id));
         }
 
         public virtual TEntity Add(TEntity entity)

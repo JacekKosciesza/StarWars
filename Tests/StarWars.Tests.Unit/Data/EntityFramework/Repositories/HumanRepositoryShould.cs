@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moq;
 using StarWars.Core.Models;
@@ -40,6 +41,34 @@ namespace StarWars.Tests.Unit.Data.EntityFramework.Repositories
             // Then
             Assert.NotNull(luke);
             Assert.Equal("Luke Skywalker", luke.Name);
+        }
+
+        [Fact]
+        public async void ReturnLukeFriendsAndEpisodes()
+        {
+            // When
+            var character = await _humanRepository.Get(1000, includes: new[] { "CharacterEpisodes.Episode", "CharacterFriends.Friend" });
+
+            // Then
+            Assert.NotNull(character);
+            Assert.NotNull(character.CharacterEpisodes);
+            var episodes = character.CharacterEpisodes.Select(e => e.Episode.Title);
+            Assert.Equal(new[] { "NEWHOPE", "EMPIRE", "JEDI" }, episodes);
+            Assert.NotNull(character.CharacterFriends);
+            var friends = character.CharacterFriends.Select(e => e.Friend.Name);
+            Assert.Equal(new[] { "Han Solo", "Leia Organa", "C-3PO", "R2-D2" }, friends);
+        }
+
+        [Fact]
+        public async void ReturnLukesHomePlanet()
+        {
+            // When
+            var luke = await _humanRepository.Get(1000, include: "HomePlanet");
+
+            // Then
+            Assert.NotNull(luke);
+            Assert.NotNull(luke.HomePlanet);
+            Assert.Equal("Tatooine", luke.HomePlanet.Name);
         }
 
         [Fact]

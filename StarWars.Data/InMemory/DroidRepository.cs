@@ -44,6 +44,11 @@ namespace StarWars.Data.InMemory
             return Task.FromResult(_droids.FirstOrDefault(droid => droid.Id == id));
         }
 
+        public Task<Droid> Get(int id, string include)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<List<Droid>> GetAll()
         {
             throw new NotImplementedException();
@@ -55,6 +60,21 @@ namespace StarWars.Data.InMemory
         }
 
         public void Update(Droid entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<Droid>> GetAll(string include)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<Droid>> GetAll(IEnumerable<string> includes)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Droid> Get(int id, IEnumerable<string> includes)
         {
             throw new NotImplementedException();
         }
