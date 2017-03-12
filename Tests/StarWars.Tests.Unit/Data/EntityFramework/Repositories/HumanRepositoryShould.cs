@@ -46,10 +46,10 @@ namespace StarWars.Tests.Unit.Data.EntityFramework.Repositories
         public async void AddNewHuman()
         {
             // Given
-            var human2101 = new Human { Id = 10101, Name = "Human10101" };
+            var human10101 = new Human { Id = 10101, Name = "Human10101" };
 
             // When
-            _humanRepository.Add(human2101);
+            _humanRepository.Add(human10101);
             var saved = await _humanRepository.SaveChangesAsync();
 
             // Then
