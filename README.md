@@ -1913,6 +1913,67 @@ namespace StarWars.Data.EntityFramework.Repositories
 }
 ```
 
+* Update base repository with 'include' versions
+```csharp
+namespace StarWars.Core.Data
+{
+    public interface IBaseRepository<TEntity, in TKey>
+        where TEntity : class
+    {
+        // ...
+        Task<List<TEntity>> GetAll(string include);
+        Task<List<TEntity>> GetAll(IEnumerable<string> includes);
+        
+        // ...
+
+        Task<TEntity> Get(TKey id, string include);
+        Task<TEntity> Get(TKey id, IEnumerable<string> includes);
+        // ...
+    }
+}
+```
+```csharp
+namespace StarWars.Data.EntityFramework.Repositories
+{
+    public abstract class BaseRepository<TEntity, TKey> : IBaseRepository<TEntity, TKey>
+        where TEntity : class, IEntity<TKey>, new()
+    {
+        // ...
+        public Task<List<TEntity>> GetAll(string include)
+        {
+            _logger.LogInformation("Get all {type}s (including {include})", typeof(TEntity).Name, include);
+            return _db.Set<TEntity>().Include(include).ToListAsync();
+        }
+
+        public Task<List<TEntity>> GetAll(IEnumerable<string> includes)
+        {
+            _logger.LogInformation("Get all {type}s (including [{includes}])", typeof(TEntity).Name, string.Join(",", includes));
+            var query = _db.Set<TEntity>().AsQueryable();
+            query = includes.Aggregate(query, (current, include) => current.Include(include));
+            return query.ToListAsync();
+        }
+
+        // ...
+
+        public Task<TEntity> Get(TKey id, string include)
+        {
+            _logger.LogInformation("Get {type} with id = {id} (including {include})", typeof(TEntity).Name, id, include);
+            return _db.Set<TEntity>().Include(include).SingleOrDefaultAsync(c => c.Id.Equals(id));
+        }
+
+        public Task<TEntity> Get(TKey id, IEnumerable<string> includes)
+        {
+            _logger.LogInformation("Get {type} with id = {id} (including [{include}])", typeof(TEntity).Name, id, string.Join(",", includes));
+            var query = _db.Set<TEntity>().AsQueryable();
+            query = includes.Aggregate(query, (current, include) => current.Include(include));
+            return query.SingleOrDefaultAsync(c => c.Id.Equals(id));
+        }
+
+        // ...
+    }
+}
+```
+
 * Create repositories CRUD unit tests
 ```csharp
 namespace StarWars.Tests.Unit.Data.EntityFramework.Repositories
