@@ -6,6 +6,7 @@ namespace StarWars.Tests.Unit.Api.Models
     public class GraphQLQueryShould
     {
         [Fact]
+        [Trait("test", "unit")]
         public void ReturnFormattedText()
         {
             // Given

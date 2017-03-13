@@ -8,6 +8,7 @@ namespace StarWars.Tests.Integration.Data.EntityFramework
     public class StarWarsContextShould
     {
         [Fact]
+        [Trait("test", "integration")]
         public async void ReturnR2D2Droid()
         {
             // Given

@@ -33,6 +33,7 @@ namespace StarWars.Tests.Unit.Data.EntityFramework.Repositories
         }
 
         [Fact]
+        [Trait("test", "unit")]
         public async void ReturnR2D2DroidGivenIdOf2001()
         {
             // When
@@ -44,6 +45,7 @@ namespace StarWars.Tests.Unit.Data.EntityFramework.Repositories
         }
 
         [Fact]
+        [Trait("test", "unit")]
         public async void ReturnR2D2FriendsAndEpisodes()
         {
             // When
@@ -60,6 +62,7 @@ namespace StarWars.Tests.Unit.Data.EntityFramework.Repositories
         }
 
         [Fact]
+        [Trait("test", "unit")]
         public async void AddNewDroid()
         {
             // Given
@@ -85,6 +88,7 @@ namespace StarWars.Tests.Unit.Data.EntityFramework.Repositories
         }
 
         [Fact]
+        [Trait("test", "unit")]
         public async void UpdateExistingDroid()
         {
             // Given
@@ -112,6 +116,7 @@ namespace StarWars.Tests.Unit.Data.EntityFramework.Repositories
         }
 
         [Fact]
+        [Trait("test", "unit")]
         public async void DeleteExistingDroid()
         {
             // Given

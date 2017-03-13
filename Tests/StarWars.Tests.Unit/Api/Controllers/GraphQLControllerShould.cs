@@ -25,6 +25,7 @@ namespace StarWars.Tests.Unit.Api.Controllers
         }
 
         [Fact]
+        [Trait("test", "unit")]
         public void ReturnNotNullViewResult()
         {
             // When
@@ -36,6 +37,7 @@ namespace StarWars.Tests.Unit.Api.Controllers
         }
 
         [Fact]
+        [Trait("test", "unit")]
         public async void ReturnNotNullExecutionResult()
         {
             // Given

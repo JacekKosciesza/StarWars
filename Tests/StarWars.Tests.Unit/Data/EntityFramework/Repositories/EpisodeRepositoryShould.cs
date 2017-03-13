@@ -32,6 +32,7 @@ namespace StarWars.Tests.Unit.Data.EntityFramework.Repositories
         }
 
         [Fact]
+        [Trait("test", "unit")]
         public async void ReturnJediEpisodeGivenIdOf6()
         {
             // When
@@ -43,6 +44,7 @@ namespace StarWars.Tests.Unit.Data.EntityFramework.Repositories
         }
 
         [Fact]
+        [Trait("test", "unit")]
         public async void AddNewEpisode()
         {
             // Given
@@ -68,6 +70,7 @@ namespace StarWars.Tests.Unit.Data.EntityFramework.Repositories
         }
 
         [Fact]
+        [Trait("test", "unit")]
         public async void UpdateExistingEpisode()
         {
             // Given
@@ -95,6 +98,7 @@ namespace StarWars.Tests.Unit.Data.EntityFramework.Repositories
         }
 
         [Fact]
+        [Trait("test", "unit")]
         public async void DeleteExistingEpisode()
         {
             // Given

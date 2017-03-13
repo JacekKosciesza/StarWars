@@ -6,6 +6,7 @@ namespace StarWars.Tests.Unit.Api.Models
     public class DroidTypeShould
     {
         [Fact]
+        [Trait("test", "unit")]
         public void HaveIdAndNameFields()
         {
             // When

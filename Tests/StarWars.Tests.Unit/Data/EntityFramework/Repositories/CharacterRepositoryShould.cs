@@ -33,6 +33,7 @@ namespace StarWars.Tests.Unit.Data.EntityFramework.Repositories
         }
 
         [Fact]
+        [Trait("test", "unit")]
         public async void ReturnR2D2CharacterGivenIdOf2001()
         {
             // When
@@ -44,6 +45,7 @@ namespace StarWars.Tests.Unit.Data.EntityFramework.Repositories
         }
 
         [Fact]
+        [Trait("test", "unit")]
         public async void ReturnR2D2FriendsAndEpisodes()
         {
             // When
@@ -60,6 +62,7 @@ namespace StarWars.Tests.Unit.Data.EntityFramework.Repositories
         }
 
         [Fact]
+        [Trait("test", "unit")]
         public async void ReturnLukeGivenIdOf1000()
         {
             // When
@@ -71,6 +74,7 @@ namespace StarWars.Tests.Unit.Data.EntityFramework.Repositories
         }
 
         [Fact]
+        [Trait("test", "unit")]
         public async void ReturnLukeFriendsAndEpisodes()
         {
             // When
@@ -87,6 +91,7 @@ namespace StarWars.Tests.Unit.Data.EntityFramework.Repositories
         }
 
         [Fact]
+        [Trait("test", "unit")]
         public async void AddNewCharacter()
         {
             // Given
@@ -112,6 +117,7 @@ namespace StarWars.Tests.Unit.Data.EntityFramework.Repositories
         }
 
         [Fact]
+        [Trait("test", "unit")]
         public async void AddNewDroid()
         {
             // Given
@@ -138,6 +144,7 @@ namespace StarWars.Tests.Unit.Data.EntityFramework.Repositories
         }
 
         [Fact]
+        [Trait("test", "unit")]
         public async void AddNewHuman()
         {
             // Given
@@ -164,6 +171,7 @@ namespace StarWars.Tests.Unit.Data.EntityFramework.Repositories
         }
 
         [Fact]
+        [Trait("test", "unit")]
         public async void UpdateExistingCharacter()
         {
             // Given
@@ -191,6 +199,7 @@ namespace StarWars.Tests.Unit.Data.EntityFramework.Repositories
         }
 
         [Fact]
+        [Trait("test", "unit")]
         public async void DeleteExistingCharacter()
         {
             // Given

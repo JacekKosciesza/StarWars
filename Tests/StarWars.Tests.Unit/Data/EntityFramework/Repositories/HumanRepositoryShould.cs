@@ -33,6 +33,7 @@ namespace StarWars.Tests.Unit.Data.EntityFramework.Repositories
         }
 
         [Fact]
+        [Trait("test", "unit")]
         public async void ReturnLukeGivenIdOf1000()
         {
             // When
@@ -44,6 +45,7 @@ namespace StarWars.Tests.Unit.Data.EntityFramework.Repositories
         }
 
         [Fact]
+        [Trait("test", "unit")]
         public async void ReturnLukeFriendsAndEpisodes()
         {
             // When
@@ -60,6 +62,7 @@ namespace StarWars.Tests.Unit.Data.EntityFramework.Repositories
         }
 
         [Fact]
+        [Trait("test", "unit")]
         public async void ReturnLukesHomePlanet()
         {
             // When
@@ -72,6 +75,7 @@ namespace StarWars.Tests.Unit.Data.EntityFramework.Repositories
         }
 
         [Fact]
+        [Trait("test", "unit")]
         public async void AddNewHuman()
         {
             // Given
@@ -97,6 +101,7 @@ namespace StarWars.Tests.Unit.Data.EntityFramework.Repositories
         }
 
         [Fact]
+        [Trait("test", "unit")]
         public async void UpdateExistingHuman()
         {
             // Given
@@ -124,6 +129,7 @@ namespace StarWars.Tests.Unit.Data.EntityFramework.Repositories
         }
 
         [Fact]
+        [Trait("test", "unit")]
         public async void DeleteExistingHuman()
         {
             // Given

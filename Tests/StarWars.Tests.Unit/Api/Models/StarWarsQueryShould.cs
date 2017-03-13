@@ -8,6 +8,7 @@ namespace StarWars.Tests.Unit.Api.Models
     public class StarWarsQueryShould
     {
         [Fact]
+        [Trait("test", "unit")]
         public void HaveHeroField()
         {
             // Given

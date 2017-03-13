@@ -16,6 +16,7 @@ namespace StarWars.Tests.Unit.Data.InMemory
         }
 
         [Fact]
+        [Trait("test", "unit")]
         public async void ReturnR2D2DroidGivenIdOf1()
         {
             // When

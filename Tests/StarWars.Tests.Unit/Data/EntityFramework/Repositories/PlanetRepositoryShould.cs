@@ -32,6 +32,7 @@ namespace StarWars.Tests.Unit.Data.EntityFramework.Repositories
         }
 
         [Fact]
+        [Trait("test", "unit")]
         public async void ReturnTatooinePlanetGivenIdOf1()
         {
             // When
@@ -43,6 +44,7 @@ namespace StarWars.Tests.Unit.Data.EntityFramework.Repositories
         }
 
         [Fact]
+        [Trait("test", "unit")]
         public async void AddNewPlanet()
         {
             // Given
@@ -68,6 +70,7 @@ namespace StarWars.Tests.Unit.Data.EntityFramework.Repositories
         }
 
         [Fact]
+        [Trait("test", "unit")]
         public async void UpdateExistingPlanet()
         {
             // Given
@@ -95,6 +98,7 @@ namespace StarWars.Tests.Unit.Data.EntityFramework.Repositories
         }
 
         [Fact]
+        [Trait("test", "unit")]
         public async void DeleteExistingPlanet()
         {
             // Given
