@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -35,9 +36,12 @@ namespace StarWars.Api
         {
             // Add framework services.
             services.AddMvc();
+            services.AddAutoMapper(typeof(Startup));
 
-            services.AddTransient<StarWarsQuery>();
+            services.AddScoped<StarWarsQuery>();            
+            services.AddTransient<ICharacterRepository, CharacterRepository>();
             services.AddTransient<IDroidRepository, DroidRepository>();
+            services.AddTransient<IHumanRepository, HumanRepository>();
             if (Env.IsEnvironment("Test"))
             {
                 services.AddDbContext<StarWarsContext>(options =>
@@ -48,9 +52,12 @@ namespace StarWars.Api
                 services.AddDbContext<StarWarsContext>(options =>
                     options.UseSqlServer(Configuration["ConnectionStrings:StarWarsDatabaseConnection"]));
             }
-            services.AddTransient<IDocumentExecuter, DocumentExecuter>();
+            services.AddScoped<IDocumentExecuter, DocumentExecuter>();
+            services.AddTransient<DroidType>();
+            services.AddTransient<HumanType>();
+            services.AddTransient<CharacterInterface>();
             var sp = services.BuildServiceProvider();
-            services.AddTransient<ISchema>(_ => new Schema { Query = sp.GetService<StarWarsQuery>() });
+            services.AddScoped<ISchema>(_ => new StarWarsSchema(type => (GraphType) sp.GetService(type)) {Query = sp.GetService<StarWarsQuery>()});
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

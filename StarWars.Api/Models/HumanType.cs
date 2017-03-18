@@ -2,18 +2,18 @@
 using System.Linq;
 using AutoMapper;
 using GraphQL.Types;
+using StarWars.Core.Data;
 
 namespace StarWars.Api.Models
 {
-    public class DroidType : ObjectGraphType<Droid>
+    public class HumanType : ObjectGraphType<Human>
     {
-        public DroidType(Core.Data.ICharacterRepository characterRepository, IMapper mapper)
+        public HumanType(ICharacterRepository characterRepository, IMapper mapper)
         {
-            Name = "Droid";
-            Description = "A mechanical creature in the Star Wars universe.";
+            Name = "Human";
 
-            Field(x => x.Id).Description("The Id of the Droid.");
-            Field(x => x.Name, nullable: true).Description("The name of the Droid.");
+            Field(h => h.Id).Description("The id of the human.");
+            Field(h => h.Name, nullable: true).Description("The name of the human.");
 
             Field<ListGraphType<CharacterInterface>>(
                 "friends",
@@ -34,8 +34,7 @@ namespace StarWars.Api.Models
                 }
             ).Description("Which movie they appear in.");
 
-
-            Field(d => d.PrimaryFunction, nullable: true).Description("The primary function of the droid.");
+            Field(h => h.HomePlanet, nullable: true).Description("The home planet of the human.");
 
             Interface<CharacterInterface>();
         }

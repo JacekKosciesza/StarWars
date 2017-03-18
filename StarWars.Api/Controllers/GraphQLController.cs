@@ -1,4 +1,5 @@
-﻿using GraphQL;
+﻿using System;
+using GraphQL;
 using GraphQL.Types;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -32,17 +33,28 @@ namespace StarWars.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] GraphQLQuery query)
         {
+            if (query == null) { throw new ArgumentNullException(nameof(query)); }
+
             var executionOptions = new ExecutionOptions { Schema = _schema, Query = query.Query };
-            var result = await _documentExecuter.ExecuteAsync(executionOptions).ConfigureAwait(false);
 
-            if (result.Errors?.Count > 0)
+            try
             {
-                _logger.LogError("GraphQL errors: {0}", result.Errors);
-                return BadRequest(result);
-            }
+                var result = await _documentExecuter.ExecuteAsync(executionOptions).ConfigureAwait(false);
 
-            _logger.LogDebug("GraphQL execution result: {result}", JsonConvert.SerializeObject(result.Data));
-            return Ok(result);
+                if (result.Errors?.Count > 0)
+                {
+                    _logger.LogError("GraphQL errors: {0}", result.Errors);
+                    return BadRequest(result);
+                }
+
+                _logger.LogDebug("GraphQL execution result: {result}", JsonConvert.SerializeObject(result.Data));
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Document exexuter exception", ex);
+                return BadRequest(ex);
+            }
         }
     }
 }

@@ -1,4 +1,7 @@
-﻿using StarWars.Api.Models;
+﻿using AutoMapper;
+using Moq;
+using StarWars.Api.Models;
+using StarWars.Core.Data;
 using Xunit;
 
 namespace StarWars.Tests.Unit.Api.Models
@@ -9,8 +12,12 @@ namespace StarWars.Tests.Unit.Api.Models
         [Trait("test", "unit")]
         public void HaveIdAndNameFields()
         {
+            // Given
+            var characterRepository = new Mock<ICharacterRepository>();
+            var mapper = new Mock<IMapper>();
+
             // When
-            var droidType = new DroidType();
+            var droidType = new DroidType(characterRepository.Object, mapper.Object);
 
             // Then
             Assert.NotNull(droidType);

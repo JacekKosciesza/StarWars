@@ -7,6 +7,6 @@ namespace StarWars.Core.Models
     {
         public int  Id  { get; set; }
         public string Title { get; set; }
-        public virtual ICollection<CharacterEpisode> CharacterEpisodes { get; set; }
+        public ICollection<CharacterEpisode> CharacterEpisodes { get; set; }
     }
 }

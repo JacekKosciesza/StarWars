@@ -236,11 +236,10 @@ namespace StarWars.Tests.Integration.Api.Controllers
             const string query = @"{
                 ""query"":
                     ""query FetchLukeQuery {
-                        human(id: ""1000"") {
+                        human(id: \""1000\"") {
                             name
                         }
-                    }
-                }""
+                    }""
             }";
             var content = new StringContent(query, Encoding.UTF8, "application/json");
 
@@ -270,7 +269,7 @@ namespace StarWars.Tests.Integration.Api.Controllers
             const string query = @"{
                 ""query"":
                     ""query FetchLukeAliased {
-                        luke: human(id: ""1000"") {
+                        luke: human(id: \""1000\"") {
                             name
                         }
                     }
@@ -307,10 +306,10 @@ namespace StarWars.Tests.Integration.Api.Controllers
             const string query = @"{
                 ""query"":
                     ""query FetchLukeAliased {
-                        luke: human(id: ""1000"") {
+                        luke: human(id: \""1000\"") {
                             name
                         }
-                        leia: human(id: ""1003"") {
+                        leia: human(id: \""1003\"") {
                             name
                         }
                     }
@@ -350,11 +349,11 @@ namespace StarWars.Tests.Integration.Api.Controllers
             const string query = @"{
                 ""query"":
                     ""query DuplicateFields {
-                        luke: human(id: ""1000"") {
+                        luke: human(id: \""1000\"") {
                             name
                             homePlanet
                         }
-                        leia: human(id: ""1003"") {
+                        leia: human(id: \""1003\"") {
                             name
                             homePlanet
                         }
@@ -397,10 +396,10 @@ namespace StarWars.Tests.Integration.Api.Controllers
             const string query = @"{
                 ""query"":
                     ""query UseFragment {
-                        luke: human(id: ""1000"") {
+                        luke: human(id: \""1000\"") {
                             ...HumanFragment
                         }
-                        leia: human(id: ""1003"") {
+                        leia: human(id: \""1003\"") {
                             ...HumanFragment
                         }
                     }
@@ -408,8 +407,7 @@ namespace StarWars.Tests.Integration.Api.Controllers
                     fragment HumanFragment on Human {
                         name
                         homePlanet
-                    }
-                }""
+                    }""
             }";
             var content = new StringContent(query, Encoding.UTF8, "application/json");
 
@@ -447,8 +445,7 @@ namespace StarWars.Tests.Integration.Api.Controllers
                             __typename
                             name
                         }
-                    }
-                }""
+                    }""
             }";
             var content = new StringContent(query, Encoding.UTF8, "application/json");
 
@@ -484,8 +481,7 @@ namespace StarWars.Tests.Integration.Api.Controllers
                             __typename
                             name
                        }
-                    }
-                }""
+                    }""
             }";
             var content = new StringContent(query, Encoding.UTF8, "application/json");
 
