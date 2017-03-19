@@ -12,7 +12,8 @@ namespace StarWars.Api
             CreateMap<Core.Models.Character, Character>(MemberList.Destination)
                 .ForMember(
                     dest => dest.Friends,
-                    opt => opt.MapFrom(src => src.CharacterFriends.Select(x => x.Friend))
+                    //opt => opt.MapFrom(src => src.CharacterFriends.Select(x => x.Friend))
+                    opt => opt.Ignore() // to avoid circular references and stack overflow during mapping
                 )
                 .ForMember(
                     dest => dest.AppearsIn,

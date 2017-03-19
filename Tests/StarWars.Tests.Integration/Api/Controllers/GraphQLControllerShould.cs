@@ -272,8 +272,7 @@ namespace StarWars.Tests.Integration.Api.Controllers
                         luke: human(id: \""1000\"") {
                             name
                         }
-                    }
-                }""
+                    }""
             }";
             var content = new StringContent(query, Encoding.UTF8, "application/json");
 
@@ -284,10 +283,10 @@ namespace StarWars.Tests.Integration.Api.Controllers
             response.EnsureSuccessStatusCode();
             var responseString = await response.Content.ReadAsStringAsync();
             Assert.NotNull(responseString);
-            //const string responseString = @"{""data"":{""human"":{""name"":""Luke Skywalker""}}}";
+            //const string responseString = @"{""data"":{""luke"":{""name"":""Luke Skywalker""}}}";
             var jobj = JObject.Parse(responseString);
             Assert.NotNull(jobj);
-            Assert.Equal("Luke Skywalker", (string)jobj["data"]["human"]["name"]);
+            Assert.Equal("Luke Skywalker", (string)jobj["data"]["luke"]["name"]);
         }
 
         // {
@@ -312,8 +311,7 @@ namespace StarWars.Tests.Integration.Api.Controllers
                         leia: human(id: \""1003\"") {
                             name
                         }
-                    }
-                }""
+                    }""
             }";
             var content = new StringContent(query, Encoding.UTF8, "application/json");
 
@@ -357,8 +355,7 @@ namespace StarWars.Tests.Integration.Api.Controllers
                             name
                             homePlanet
                         }
-                    }
-                }""
+                    }""
             }";
             var content = new StringContent(query, Encoding.UTF8, "application/json");
 
