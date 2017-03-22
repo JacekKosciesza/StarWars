@@ -12,7 +12,7 @@ namespace StarWars.Api.Models
             Field(d => d.Name, nullable: true).Description("The name of the character.");
 
             Field<ListGraphType<CharacterInterface>>("friends");
-            Field(x => x.AppearsIn).Description("Which movie they appear in.");
+            Field<ListGraphType<EpisodeEnum>>("appearsIn", "Which movie they appear in.");
         }
     }
 }

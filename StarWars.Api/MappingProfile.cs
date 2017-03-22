@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using AutoMapper;
+﻿using AutoMapper;
 using StarWars.Api.Models;
 
 namespace StarWars.Api
@@ -10,15 +9,9 @@ namespace StarWars.Api
         {
             // Character
             CreateMap<Core.Models.Character, Character>(MemberList.Destination)
-                .ForMember(
-                    dest => dest.Friends,
-                    //opt => opt.MapFrom(src => src.CharacterFriends.Select(x => x.Friend))
-                    opt => opt.Ignore() // to avoid circular references and stack overflow during mapping
-                )
-                .ForMember(
-                    dest => dest.AppearsIn,
-                    opt => opt.MapFrom(src => src.CharacterEpisodes.Select(x => x.Episode.Title))
-                );
+                .ForMember(dest => dest.Friends, opt => opt.Ignore())
+                .ForMember(dest => dest.AppearsIn, opt => opt.Ignore()
+            );
 
             // Droid
             CreateMap<Core.Models.Droid, Droid>(MemberList.Destination).IncludeBase<Core.Models.Character, Character>();

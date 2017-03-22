@@ -13,8 +13,13 @@ namespace StarWars.Api.Models
 
             Field<DroidType>(
               "hero",
+              arguments: new QueryArguments(
+                    new QueryArgument<EpisodeEnum> { Name = "episode", Description = "If omitted, returns the hero of the whole saga. If provided, returns the hero of that particular episode." }
+              ),
               resolve: context =>
               {
+                  var episode = context.GetArgument<Episodes?>("episode");
+                  // TODO: get hero (character) based on episode
                   var r2d2 = droidRepository.Get(2001/*, includes: new [] { "CharacterEpisodes.Episode", "CharacterFriends.Friend" }*/).Result;
                   var droid = mapper.Map<Droid>(r2d2);
                   return droid;

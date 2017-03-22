@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
 using GraphQL.Types;
@@ -25,14 +26,16 @@ namespace StarWars.Api.Models
                 }
             );
 
-            Field(x => x.AppearsIn).Resolve(
-                context =>
-                {
-                    var episodes = characterRepository.GetEpisodes(int.Parse(context.Source.Id)).Result;
-                    var titles = episodes.Select(y => y.Title).ToArray();
-                    return titles;
-                }
-            ).Description("Which movie they appear in.");
+            Field<ListGraphType<EpisodeEnum>>(
+                 "appearsIn",
+                 "Which movie they appear in.",
+                 resolve: context =>
+                 {
+                     var episodes = characterRepository.GetEpisodes(int.Parse(context.Source.Id)).Result;
+                     var episodeEnums = episodes.Select(y => (Episodes)y.Id).ToArray();
+                     return episodeEnums;
+                 }
+             );
 
 
             Field(d => d.PrimaryFunction, nullable: true).Description("The primary function of the droid.");

@@ -25,14 +25,16 @@ namespace StarWars.Api.Models
                 }
             );
 
-            Field(x => x.AppearsIn).Resolve(
-                context =>
+            Field<ListGraphType<EpisodeEnum>>(
+                "appearsIn",
+                "Which movie they appear in.",
+                resolve: context =>
                 {
                     var episodes = characterRepository.GetEpisodes(int.Parse(context.Source.Id)).Result;
-                    var titles = episodes.Select(y => y.Title).ToArray();
-                    return titles;
+                    var episodeEnums = episodes.Select(y => (Episodes)y.Id).ToArray();
+                    return episodeEnums;
                 }
-            ).Description("Which movie they appear in.");
+            );
 
             Field(h => h.HomePlanet, nullable: true).Description("The home planet of the human.");
 

@@ -56,6 +56,7 @@ namespace StarWars.Api
             services.AddTransient<DroidType>();
             services.AddTransient<HumanType>();
             services.AddTransient<CharacterInterface>();
+            services.AddTransient<EpisodeEnum>();
             var sp = services.BuildServiceProvider();
             services.AddScoped<ISchema>(_ => new StarWarsSchema(type => (GraphType) sp.GetService(type)) {Query = sp.GetService<StarWarsQuery>()});
         }
