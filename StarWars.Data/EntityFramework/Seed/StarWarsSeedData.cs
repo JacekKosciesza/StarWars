@@ -211,6 +211,13 @@ namespace StarWars.Data.EntityFramework.Seed
                 db.Characters.UpdateRange(characters);
                 db.SaveChanges();
             }
+
+            // update episode's heroes
+            newhope.Hero = artoo;
+            empire.Hero = luke;
+            jedi.Hero = artoo;
+            db._logger.LogInformation("Seeding episode's heroes");
+            db.SaveChanges();
         }
     }
 }

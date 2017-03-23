@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using StarWars.Data.EntityFramework.Repositories;
 using GraphQL.Types;
 using GraphQL;
+using StarWars.Core.Logic;
 
 namespace StarWars.Api
 {
@@ -42,6 +43,7 @@ namespace StarWars.Api
             services.AddTransient<ICharacterRepository, CharacterRepository>();
             services.AddTransient<IDroidRepository, DroidRepository>();
             services.AddTransient<IHumanRepository, HumanRepository>();
+            services.AddTransient<IEpisodeRepository, EpisodeRepository>();
             if (Env.IsEnvironment("Test"))
             {
                 services.AddDbContext<StarWarsContext>(options =>
@@ -53,6 +55,7 @@ namespace StarWars.Api
                     options.UseSqlServer(Configuration["ConnectionStrings:StarWarsDatabaseConnection"]));
             }
             services.AddScoped<IDocumentExecuter, DocumentExecuter>();
+            services.AddScoped<ITrilogyHeroes, TrilogyHeroes>();
             services.AddTransient<DroidType>();
             services.AddTransient<HumanType>();
             services.AddTransient<CharacterInterface>();

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using GraphQL.Types;
+using StarWars.Core.Logic;
 
 namespace StarWars.Api.Models
 {
@@ -7,11 +8,11 @@ namespace StarWars.Api.Models
     {
         public StarWarsQuery() { }
 
-        public StarWarsQuery(Core.Data.IDroidRepository droidRepository, Core.Data.IHumanRepository humanRepository, IMapper mapper)
+        public StarWarsQuery(ITrilogyHeroes trilogyHeroes, Core.Data.IDroidRepository droidRepository, Core.Data.IHumanRepository humanRepository, IMapper mapper)
         {
             Name = "Query";
 
-            Field<DroidType>(
+            Field<CharacterInterface>(
               "hero",
               arguments: new QueryArguments(
                     new QueryArgument<EpisodeEnum> { Name = "episode", Description = "If omitted, returns the hero of the whole saga. If provided, returns the hero of that particular episode." }
@@ -19,10 +20,9 @@ namespace StarWars.Api.Models
               resolve: context =>
               {
                   var episode = context.GetArgument<Episodes?>("episode");
-                  // TODO: get hero (character) based on episode
-                  var r2d2 = droidRepository.Get(2001/*, includes: new [] { "CharacterEpisodes.Episode", "CharacterFriends.Friend" }*/).Result;
-                  var droid = mapper.Map<Droid>(r2d2);
-                  return droid;
+                  var character = trilogyHeroes.GetHero((int?)episode).Result;
+                  var hero = mapper.Map<Character>(character);
+                  return hero;
               }
             );
 
@@ -34,7 +34,7 @@ namespace StarWars.Api.Models
                 resolve: context =>
                 {
                     var id = context.GetArgument<int>("id");
-                    var human = humanRepository.Get(id, includes: new[] { "CharacterEpisodes.Episode", "CharacterFriends.Friend", "HomePlanet" }).Result;
+                    var human = humanRepository.Get(id, include: "HomePlanet").Result;
                     var mapped = mapper.Map<Human>(human);
                     return mapped;
                 }
@@ -47,7 +47,7 @@ namespace StarWars.Api.Models
                 resolve: context =>
                 {
                     var id = context.GetArgument<int>("id");
-                    var droid = droidRepository.Get(id, includes: new[] { "CharacterEpisodes.Episode", "CharacterFriends.Friend" }).Result;
+                    var droid = droidRepository.Get(id).Result;
                     var mapped = mapper.Map<Droid>(droid);
                     return mapped;
                 }

@@ -7,6 +7,7 @@ namespace StarWars.Core.Models
     {
         public int  Id  { get; set; }
         public string Title { get; set; }
+        public Character Hero { get; set; }
         public ICollection<CharacterEpisode> CharacterEpisodes { get; set; }
     }
 }

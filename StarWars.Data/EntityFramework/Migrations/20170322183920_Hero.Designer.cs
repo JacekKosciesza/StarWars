@@ -8,9 +8,10 @@ using StarWars.Data.EntityFramework;
 namespace StarWars.Data.EntityFramework.Migrations
 {
     [DbContext(typeof(StarWarsContext))]
-    partial class StarWarsContextModelSnapshot : ModelSnapshot
+    [Migration("20170322183920_Hero")]
+    partial class Hero
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.1")
