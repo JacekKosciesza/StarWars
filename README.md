@@ -1,4 +1,5 @@
 # GraphQL 'Star Wars' example using GraphQL for .NET, ASP.NET Core, Entity Framework Core
+![Build Status](https://jkepam.visualstudio.com/_apis/public/build/definitions/c5229147-0cc1-4235-b84b-444644d66378/1/badge)
 
 ## Examples
 * Basic - simple 'Hello GraphQL!' example based on console version from [GraphQL for .NET on GitHub](https://github.com/graphql-dotnet/graphql-dotnet),
@@ -25,7 +26,7 @@ but using ASP.NET Core, Entity Framework Core and some best practices, patterns 
     - [x] Integration Tests
     - [x] Logs
     - [x] Code Coverage
-    - [ ] Continous Integration
+    - [x] Continous Integration
 - [ ] Advanced
     - [x] Full 'Star Wars' database (Episodes, Characters, Planets, Humans etc.)
     - [x] Base/generic repository

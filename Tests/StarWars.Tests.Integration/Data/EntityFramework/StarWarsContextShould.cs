@@ -7,7 +7,8 @@ namespace StarWars.Tests.Integration.Data.EntityFramework
 {
     public class StarWarsContextShould
     {
-        [Fact]
+        //[Fact]
+        //[Fact(Skip = "It uses real database")]
         [Trait("test", "integration")]
         public async void ReturnR2D2Droid()
         {
