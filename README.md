@@ -1,5 +1,5 @@
 # GraphQL 'Star Wars' example using GraphQL for .NET, ASP.NET Core, Entity Framework Core
-![Build Status](https://jkepam.visualstudio.com/_apis/public/build/definitions/c5229147-0cc1-4235-b84b-444644d66378/1/badge)
+![Build Status](https://jkff.visualstudio.com/_apis/public/build/definitions/80056780-12c1-4732-b8a9-d9518cbbe430/1/badge)
 
 ## Examples
 * Basic - simple 'Hello GraphQL!' example based on console version from [GraphQL for .NET on GitHub](https://github.com/graphql-dotnet/graphql-dotnet),
@@ -1235,9 +1235,38 @@ start .\coverage\unit\index.htm
  
  #### Continous Integration
 
- * Configure CI using VSTS (Visual Studio Team Services).<br>
-   TODO: At the moment hosted agents don't support *.csproj based .NET Core projects, so we have to wait for a while, see this issue:
-   [Support for .NET Core .csproj files? #3311](https://github.com/Microsoft/vsts-tasks/issues/3311)
+* Create new project in VSTS (Visual Studio Team Services)
+![vsts-new-project](https://cloud.githubusercontent.com/assets/8171434/24324212/6dd943b2-1182-11e7-915f-0a62521556bf.png)
+
+* Create new build definition 'ASP.NET Core Preview'. Select GitHub, Hosted VS2017 default agent queue and continous integration. ~~At the moment hosted agents don't support *.csproj based .NET Core projects, so we have to wait for a while, see this issue: [Support for .NET Core .csproj files? #3311](https://github.com/Microsoft/vsts-tasks/issues/3311)~~
+![vsts-new-build-definition](https://cloud.githubusercontent.com/assets/8171434/24324292/feb86ca4-1183-11e7-8ea0-b021338ae17f.png)
+![vsts-new-build-definition-github-hosted-vs2017](https://cloud.githubusercontent.com/assets/8171434/24324328/c113efa8-1184-11e7-9864-045987b75bf3.png)
+
+* Add new GitHub service connection
+![vsts-new-github-service-connection](https://cloud.githubusercontent.com/assets/8171434/24324400/206429ea-1186-11e7-95ae-6ecc28cbda53.png)
+
+* Switch to 'New Build Editor'
+![vsts-new-build-editor](https://cloud.githubusercontent.com/assets/8171434/24324617/e08df05e-1189-11e7-89d4-3e3f6ba8da5b.png)
+
+* Setup repository
+![vsts-setup-repository](https://cloud.githubusercontent.com/assets/8171434/24324427/7b83e234-1186-11e7-85cc-84cb61f33b0b.png)
+
+* Setup build process (tasks, build steps)
+![vsts-setup-build-steps](https://cloud.githubusercontent.com/assets/8171434/24324633/2bd86ed6-118a-11e7-8cdd-a69dd1b5f75d.png)
+
+* Setup projects in Test build step
+```
+**/Tests/StarWars.Tests.Unit/StarWars.Tests.Unit.csproj;**/Tests/StarWars.Tests.Integration/StarWars.Tests.Integration.csproj
+```
+![vsts-setup-projects-test-build-setp](https://cloud.githubusercontent.com/assets/8171434/24324637/5d4dd30c-118a-11e7-873d-1f22cd6daca1.png)
+
+ * Queue build. Make sure it succeeded and executed unit and integration tests.
+![vsts-queue-build](https://cloud.githubusercontent.com/assets/8171434/24324564/ee7b285e-1188-11e7-89c8-674f498b43d6.png)
+![vsts-build-succeeded](https://cloud.githubusercontent.com/assets/8171434/24324585/52193400-1189-11e7-84c4-9cc21659fb6e.png)
+
+* Enable build badge (after save you will see link to build status image).
+![vsts-enable-badge](https://cloud.githubusercontent.com/assets/8171434/24324660/c6927c82-118a-11e7-8d6d-0a105306b40f.png)
+
 
 ### Advanced
 
