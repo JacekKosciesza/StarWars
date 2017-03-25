@@ -1238,18 +1238,18 @@ start .\coverage\unit\index.htm
 * Create new project in VSTS (Visual Studio Team Services)
 ![vsts-new-project](https://cloud.githubusercontent.com/assets/8171434/24324212/6dd943b2-1182-11e7-915f-0a62521556bf.png)
 
-* Create new build definition 'ASP.NET Core Preview'. Select GitHub, Hosted VS2017 default agent queue and continous integration. ~~At the moment hosted agents don't support *.csproj based .NET Core projects, so we have to wait for a while, see this issue: [Support for .NET Core .csproj files? #3311](https://github.com/Microsoft/vsts-tasks/issues/3311)~~
+* Create new build definition "ASP.NET Core Preview". Select GitHub, Hosted VS2017 default agent queue and continous integration. ~~At the moment hosted agents don't support *.csproj based .NET Core projects, so we have to wait for a while, see this issue: [Support for .NET Core .csproj files? #3311](https://github.com/Microsoft/vsts-tasks/issues/3311)~~
 ![vsts-new-build-definition](https://cloud.githubusercontent.com/assets/8171434/24324292/feb86ca4-1183-11e7-8ea0-b021338ae17f.png)
 ![vsts-new-build-definition-github-hosted-vs2017](https://cloud.githubusercontent.com/assets/8171434/24324328/c113efa8-1184-11e7-9864-045987b75bf3.png)
 
 * Add new GitHub service connection
 ![vsts-new-github-service-connection](https://cloud.githubusercontent.com/assets/8171434/24324400/206429ea-1186-11e7-95ae-6ecc28cbda53.png)
 
-* Switch to 'New Build Editor'
-![vsts-new-build-editor](https://cloud.githubusercontent.com/assets/8171434/24324617/e08df05e-1189-11e7-89d4-3e3f6ba8da5b.png)
-
 * Setup repository
 ![vsts-setup-repository](https://cloud.githubusercontent.com/assets/8171434/24324427/7b83e234-1186-11e7-85cc-84cb61f33b0b.png)
+
+* Switch to "New Build Editor"
+![vsts-new-build-editor](https://cloud.githubusercontent.com/assets/8171434/24324617/e08df05e-1189-11e7-89d4-3e3f6ba8da5b.png)
 
 * Setup build process (tasks, build steps)
 ![vsts-setup-build-steps](https://cloud.githubusercontent.com/assets/8171434/24324633/2bd86ed6-118a-11e7-8cdd-a69dd1b5f75d.png)
